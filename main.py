@@ -82,6 +82,9 @@ def train(model, train_loader, loss, optimizer):
 		model.train()
 		for x, y in tqdm(train_loader):
 			x = x.float()
+			if torch.cuda.is_available(): 
+				x = x.cuda()
+				y = y.cuda()
 			pred = model(x)
 			current_loss = loss(pred, y)
 			optimizer.zero_grad()
@@ -110,6 +113,8 @@ for fold_count in range(len(folds)):
 	train_loader = DataLoader(train_set, batch_size=4, shuffle=False, sampler=train_sampler)
 
 	model = BiLSTM(word2vec_dim, num_classes)
+	if torch.cuda.is_available(): model = model.cuda()
+
 	loss = nn.CrossEntropyLoss()
 	optimizer = Adam(model.parameters())
 
