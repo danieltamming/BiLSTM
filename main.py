@@ -98,7 +98,7 @@ def train(model, train_loader, loss, optimizer):
 
 			train_loss += current_loss.item()
 
-		print('Loss is: ' + str(round(train_loss/len(train_loader,3))))
+		print('Loss is: ' + str(round(train_loss/len(train_loader),3)))
 
 
 word2vec_filename = 'data/embeddings.txt'
