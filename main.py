@@ -8,7 +8,6 @@ import torch.nn as nn
 from torch.utils.data import Dataset, DataLoader
 from torch.utils.data.sampler import SubsetRandomSampler
 from torch.optim import Adam
-import matplotlib.pyplot as plt
 import random
 
 random.seed(314)
