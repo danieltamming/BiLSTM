@@ -79,6 +79,7 @@ def getSplitIndices(dataset, num_folds=5):
 
 def train(model, train_loader, loss, optimizer):
 	for i in range(1, num_epochs+1):
+		print('NEW EPOCH')
 
 		train_loss = 0
 		model.train()
@@ -96,7 +97,7 @@ def train(model, train_loader, loss, optimizer):
 
 			train_loss += current_loss.item()
 
-		print(train_loss/len(train_loader))
+		print('Loss is: ' + str(round(train_loss/len(train_loader,3))))
 
 
 word2vec_filename = 'data/embeddings.txt'
@@ -104,7 +105,7 @@ train_path = 'data/train/'
 input_length = 25
 word2vec_dim = 300
 num_classes = 2
-num_epochs = 3
+num_epochs = 10
 
 train_set = PCDataset(train_path, word2vec_filename, num_classes=2, input_length=input_length)
 folds = getSplitIndices(train_set)
