@@ -98,11 +98,10 @@ def train(model, train_loader, loss, optimizer):
 
 			train_loss += current_loss.item()
 			_, pred = torch.max(pred, 1)
-			correct += (pred==y).sum().float().item()
+			correct += (pred==y).sum().item()
 
 		print('Loss: ' + str(round(train_loss/len(train_loader),4)))
-		print('Accuracy: '+str(round(correct/len(train_loader),3)))
-		print()
+		print('Accuracy: '+str(round(float(correct)/29316,3)))
 
 
 word2vec_filename = 'data/embeddings.txt'
@@ -110,7 +109,7 @@ train_path = 'data/train/'
 input_length = 25
 word2vec_dim = 300
 num_classes = 2
-num_epochs = 100
+num_epochs = 250
 
 train_set = PCDataset(train_path, word2vec_filename, num_classes=2, input_length=input_length)
 folds = getSplitIndices(train_set)

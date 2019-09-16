@@ -148,3 +148,6 @@ val = (pred==y).sum().float()/y.shape[0]
 print(val)
 print(type(val))
 print(val.item())
+
+_, pred = torch.max(pred, 1)
+correct += (pred==y).sum().float().item()
