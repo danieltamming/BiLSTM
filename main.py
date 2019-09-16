@@ -74,6 +74,7 @@ def getSplitIndices(dataset, num_folds=5):
 	for i in range(num_folds):
 		for j in range(num_classes):
 			folds[i] += class_indices[j][i::num_folds]
+		random.shuffle(folds[i])
 	return folds
 
 
@@ -117,8 +118,8 @@ for fold_count in range(len(folds)):
 	valid_sampler = SubsetRandomSampler(valid_idxs)
 	train_sampler = SubsetRandomSampler(train_idxs)
 
-	valid_loader = DataLoader(train_set, batch_size=128, shuffle=True, sampler=valid_sampler)
-	train_loader = DataLoader(train_set, batch_size=128, shuffle=True, sampler=train_sampler)
+	valid_loader = DataLoader(train_set, batch_size=128, shuffle=False, sampler=valid_sampler)
+	train_loader = DataLoader(train_set, batch_size=128, shuffle=False, sampler=train_sampler)
 
 	model = BiLSTM(word2vec_dim, num_classes)
 	if torch.cuda.is_available(): model = model.cuda()
