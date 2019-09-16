@@ -106,7 +106,7 @@ train_path = 'data/train/'
 input_length = 25
 word2vec_dim = 300
 num_classes = 2
-num_epochs = 10
+num_epochs = 100
 
 train_set = PCDataset(train_path, word2vec_filename, num_classes=2, input_length=input_length)
 folds = getSplitIndices(train_set)
@@ -128,3 +128,4 @@ for fold_count in range(len(folds)):
 	optimizer = Adam(model.parameters())
 
 	train(model, train_loader, loss, optimizer)
+	break
