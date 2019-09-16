@@ -80,12 +80,12 @@ def getSplitIndices(dataset, num_folds=5):
 
 def train(model, train_loader, loss, optimizer):
 	for i in range(1, num_epochs+1):
-		print('NEW EPOCH')
 
 		train_loss = 0
+		correct = 0
 		model.train()
 
-		for x, y in tqdm(train_loader):
+		for x, y in train_loader:
 			x = x.float()
 			if torch.cuda.is_available(): 
 				x = x.cuda()
@@ -97,8 +97,12 @@ def train(model, train_loader, loss, optimizer):
 			optimizer.step()
 
 			train_loss += current_loss.item()
+			_, pred = torch.max(pred, 1)
+			correct += (pred==y).sum().float().item()
 
-		print('Loss is: ' + str(round(train_loss/len(train_loader),3)))
+		print('Loss: ' + str(round(train_loss/len(train_loader),4)))
+		print('Accuracy: '+str(round(correct/len(train_loader),3)))
+		print()
 
 
 word2vec_filename = 'data/embeddings.txt'
