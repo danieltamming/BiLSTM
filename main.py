@@ -77,31 +77,52 @@ def getSplitIndices(dataset, num_folds=5):
 		random.shuffle(folds[i])
 	return folds
 
+def validate(model, val_loader, loss):
+	model.eval()
+	val_loss = 0
+	correct = 0
+	for x, y in val_loader:
+		x = x.float()
+		if torch.cuda.is_available():
+			x = x.cuda()
+			y = y.cuda()
+		pred = model(x)
+		current_loss = loss(pred, y)
+
+		val_loss += current_loss.item()
+		_, pred = torch.max(pred, 1)
+		correct += (pred==y).sum().item()
+	print('Val Loss: ' + str(round(val_loss/len(val_loader),4)))
+	print('Val Accuracy: ' + str(round(float(correct)/7330,3)))
+
+def train_one_epoch(model, train_loader, loss, optimizer):
+	train_loss = 0
+	correct = 0
+	model.train()
+
+	for x, y in train_loader:
+		x = x.float()
+		if torch.cuda.is_available(): 
+			x = x.cuda()
+			y = y.cuda()
+		pred = model(x)
+		current_loss = loss(pred, y)
+		optimizer.zero_grad()
+		current_loss.backward()
+		optimizer.step()
+
+		train_loss += current_loss.item()
+		_, pred = torch.max(pred, 1)
+		correct += (pred==y).sum().item()
+
+	print('Train Loss: ' + str(round(train_loss/len(train_loader),4)))
+	print('Train Accuracy: '+str(round(float(correct)/29316,3)))
 
 def train(model, train_loader, loss, optimizer):
 	for i in range(1, num_epochs+1):
-
-		train_loss = 0
-		correct = 0
-		model.train()
-
-		for x, y in train_loader:
-			x = x.float()
-			if torch.cuda.is_available(): 
-				x = x.cuda()
-				y = y.cuda()
-			pred = model(x)
-			current_loss = loss(pred, y)
-			optimizer.zero_grad()
-			current_loss.backward()
-			optimizer.step()
-
-			train_loss += current_loss.item()
-			_, pred = torch.max(pred, 1)
-			correct += (pred==y).sum().item()
-
-		print('Loss: ' + str(round(train_loss/len(train_loader),4)))
-		print('Accuracy: '+str(round(float(correct)/29316,3)))
+		print('Epoch number '+str(i)+'.')
+		train_one_epoch(model, train_loader, loss, optimizer)
+		validate(model, val_loader, loss)
 
 
 word2vec_filename = 'data/embeddings.txt'
@@ -115,13 +136,13 @@ train_set = PCDataset(train_path, word2vec_filename, num_classes=2, input_length
 folds = getSplitIndices(train_set)
 
 for fold_count in range(len(folds)):
-	valid_idxs = folds[fold_count]
+	val_idxs = folds[fold_count]
 	train_idxs = [idx for i,fold in enumerate(folds) if i!=fold_count for idx in fold]
 
-	valid_sampler = SubsetRandomSampler(valid_idxs)
+	val_sampler = SubsetRandomSampler(val_idxs)
 	train_sampler = SubsetRandomSampler(train_idxs)
 
-	valid_loader = DataLoader(train_set, batch_size=128, shuffle=False, sampler=valid_sampler)
+	val_loader = DataLoader(train_set, batch_size=128, shuffle=False, sampler=val_sampler)
 	train_loader = DataLoader(train_set, batch_size=128, shuffle=False, sampler=train_sampler)
 
 	model = BiLSTM(word2vec_dim, num_classes)
@@ -129,6 +150,8 @@ for fold_count in range(len(folds)):
 
 	loss = nn.CrossEntropyLoss()
 	optimizer = Adam(model.parameters())
+
+	validate(model, val_loader, loss)
 
 	train(model, train_loader, loss, optimizer)
 	break
