@@ -1,0 +1,38 @@
+- use train+dev+test sets to select needed embeddings
+- tokenize unkown words in dev+test as 1
+- tokenize padding as 0
+- 80/20 (train+valid)/test
+- 5 fold cross validation
+
+PYTORCH MODEL CREATION
+- stateless model
+- h_n is the output we care about, it contains the output of the t=seq_len th cell
+- h_n is just the same as the last index of output
+- this contains correct output for bidirectional as well
+- to see this, https://www.youtube.com/watch?v=1vGOQAel2yU skip to 9:20
+- also https://stackoverflow.com/questions/53010465/bidirectional-lstm-output-question-in-pytorch
+
+Notes:
+- 45806 reviews
+- 90 empty after tokenization, including them
+
+EDA Model:
+- Bidirectional layer with (# cells = units = dimensionality of output space) = 64, return sequences=True
+- Dropout of 0.5
+- Bidirectional layer with (# cells = units = dimensionality of output space) = 32, return sequences=False
+- Dropout of 0.5
+- Dense layer mapping to 20 units with ReLU activation
+- Softmax output mapping to # classes
+EDA Implementation:
+- Initialize with random normal weights
+- Train against categorical cross-entropy loss
+- Adam optimizer
+- Stateless LSTM (pytorch and keras default)
+
+Preprocessing / Embeddings if assigning OOV special token:
+1 - process and read reviews into list of lists of words, and list of all words
+2 - store set of embedding words
+3 - from list of all words, remove words not in embedding words set
+4 - count and sort words by decreasing frequency
+5 - tokenize reviews according to frequency and 1s for not appearing in embeddings
+6 - store word embeddings for words that are in collections counter
