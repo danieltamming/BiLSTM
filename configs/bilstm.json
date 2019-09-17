@@ -1,0 +1,10 @@
+{
+	"input_length": 25,
+	"word2vec_dim": 300,
+	"num_epochs": 3,
+	"num_classes": 2,
+
+	"embed_filename": "data/embeddings.txt",
+	"train_path": "data/train/",
+	"test_path": "data/test/"
+}

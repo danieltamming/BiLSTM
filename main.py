@@ -10,6 +10,9 @@ from torch.utils.data.sampler import SubsetRandomSampler
 from torch.optim import Adam
 import random
 
+import argparse
+import json
+
 from graphs.models.bilstm import BiLSTM
 from graphs.losses.loss import CrossEntropyLoss
 from datasets.procon import ProConDataLoader
@@ -17,14 +20,14 @@ from datasets.procon import ProConDataLoader
 random.seed(314)
 
 class ProConAgent:
-	def __init__(self):
-		self.input_length = 25
-		self.word2vec_dim = 300
-		self.num_classes = 2
-		self.num_epochs = 2
-		self.embed_filename = 'data/embeddings.txt'
-		self.train_path = 'data/train/'
-		self.test_path = 'data/test/'
+	def __init__(self, config):
+		self.input_length = config.input_length
+		self.word2vec_dim = config.word2vec_dim
+		self.num_classes = config.num_classes
+		self.num_epochs = config.num_epochs
+		self.embed_filename = config.embed_filename
+		self.train_path = config.train_path
+		self.test_path = config.test_path
 		self.loaders = ProConDataLoader(self.train_path, self.test_path, self.embed_filename)
 		self.model = BiLSTM(self.word2vec_dim, self.num_classes)
 		if torch.cuda.is_available(): self.model = self.model.cuda()
@@ -86,5 +89,7 @@ class ProConAgent:
 		print('Val Accuracy: ' + str(round(float(correct)/7330,3)))
 
 if __name__ == "__main__":
-	agent = ProConAgent()
+	with open('configs/bilstm.json') as cf:
+		config_dict = json.load(f)
+	agent = ProConAgent(config)
 	agent.run()
