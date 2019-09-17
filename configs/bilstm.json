@@ -6,7 +6,7 @@
 	"num_folds":5,
 	"batch_size":128,
 
-	"embed_filename": "data/embeddings.txt",
-	"train_path": "data/train/",
-	"test_path": "data/test/"
+	"embed_filename": "data/procon/embeddings.txt",
+	"train_path": "data/procon/train/",
+	"test_path": "data/procon/test/"
 }

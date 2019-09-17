@@ -6,9 +6,8 @@ import pandas as pd
 from collections import Counter
 from tqdm import tqdm
 
-# use keyed vectors rather than full model to save memory 
 word2vec_orig = './../DownloadedData/enwiki_20180420_300d.txt'
-word2vec_target = 'data/embeddings.txt'
+word2vec_target = 'data/ProCon/embeddings.txt'
 # embeddings = KeyedVectors.load_word2vec_format(word2vec_orig, binary=False, limit=10)
 
 reviews_path = './../DownloadedData/pros-cons/'
@@ -30,6 +29,8 @@ def get_reviews(review_path):
 
 def get_embed_vocab(embed_path, review_vocab):
 	data_path = 'data/'
+	if not os.path.exists(data_path): os.mkdir(data_path)
+	data_path = 'data/procon/'
 	if not os.path.exists(data_path): os.mkdir(data_path)
 	embed_vocab = set()
 	with open(word2vec_orig, 'r') as f1, open(word2vec_target, 'w') as f2:
@@ -59,7 +60,7 @@ def tknz(reviews_list, word_to_num):
 	return reviews_list
 
 def write_tknzd_splits(tknzd_reviews_list, test_pct=0.20):
-	data_path = 'data/'
+	data_path = 'data/procon/'
 	if not os.path.exists(data_path): os.mkdir(data_path)
 	test_path = data_path + 'test/'
 	if not os.path.exists(test_path): os.mkdir(test_path)
@@ -78,7 +79,7 @@ def write_tknzd_splits(tknzd_reviews_list, test_pct=0.20):
 		with open(train_path+str(i)+'.txt', 'w') as f:
 			for review in tknzd_reviews:
 				f.write(' '.join([str(num) for num in review])+'\n')
-	
+
 
 reviews_pro = get_reviews(reviews_path+'IntegratedPros.txt')
 reviews_con = get_reviews(reviews_path+'IntegratedCons.txt')

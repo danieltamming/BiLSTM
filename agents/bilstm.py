@@ -2,7 +2,8 @@ import numpy as np
 import pandas as pd
 from collections import Counter
 from tqdm import tqdm
-from time import time
+import logging
+import time
 import torch
 import torch.nn as nn
 from torch.utils.data import Dataset, DataLoader
@@ -17,12 +18,15 @@ from easydict import EasyDict
 from graphs.models.bilstm import BiLSTM
 from graphs.losses.loss import CrossEntropyLoss
 from datasets.procon import ProConDataLoader
+from utils.metrics import AverageMeter, get_accuracy
 
 random.seed(314)
 
 class BiLSTMAgent:
 	def __init__(self, config):
 		self.config = config
+		self.logger = logging.getLogger('BiLSTMAgent')
+		self.cur_epoch = 0
 		self.model = BiLSTM(self.config)
 		if torch.cuda.is_available(): self.model = self.model.cuda()
 		self.loaders = ProConDataLoader(self.config)
@@ -39,47 +43,53 @@ class BiLSTMAgent:
 			self.train()
 
 	def train(self):
-		for i in range(1, self.config.num_epochs+1):
-			self.train_one_epoch()
+		for self.cur_epoch in range(1, self.config.num_epochs+1):
+			# self.train_one_epoch()
 			self.validate()
 
 	def train_one_epoch(self):
-		train_loss = 0
-		correct = 0
 		self.model.train()
 
+		loss = AverageMeter()
+		acc = AverageMeter()
 		for x, y in self.train_loader:
 			x = x.float()
 			if torch.cuda.is_available(): 
 				x = x.cuda()
 				y = y.cuda()
-			pred = self.model(x)
-			current_loss = self.loss(pred, y)
+			output = self.model(x)
+			current_loss = self.loss(output, y)
 			self.optimizer.zero_grad()
 			current_loss.backward()
 			self.optimizer.step()
 
-			train_loss += current_loss.item()
-			_, pred = torch.max(pred, 1)
-			correct += (pred==y).sum().item()
+			loss.update(current_loss.item())
+			accuracy = get_accuracy(output, y)
+			acc.update(accuracy, y.shape[0])
 
-		print('Train Loss: ' + str(round(train_loss/len(self.train_loader),4)))
-		print('Train Accuracy: '+str(round(float(correct)/29316,3)))
+		print('Train Loss: ' + str(round(loss.val,4)))
+		print('Train Accuracy: '+str(round(acc.val,4)))
+		self.logger.info('Training epoch number '+str(self.cur_epoch)+' | loss: '
+			+str(loss.val)+' - accuracy: '+str(acc.val))
 
 	def validate(self):
 		self.model.eval()
-		val_loss = 0
-		correct = 0
+		
+		loss = AverageMeter()
+		acc = AverageMeter()
 		for x, y in self.val_loader:
 			x = x.float()
 			if torch.cuda.is_available():
 				x = x.cuda()
 				y = y.cuda()
-			pred = self.model(x)
-			current_loss = self.loss(pred, y)
+			output = self.model(x)
+			current_loss = self.loss(output, y)
 
-			val_loss += current_loss.item()
-			_, pred = torch.max(pred, 1)
-			correct += (pred==y).sum().item()
-		print('Val Loss: ' + str(round(val_loss/len(self.val_loader),4)))
-		print('Val Accuracy: ' + str(round(float(correct)/7330,3)))
+			loss.update(current_loss.item())
+			accuracy = get_accuracy(output, y)
+			acc.update(accuracy, y.shape[0])
+
+		print('Val Loss: ' + str(round(loss.val,4)))
+		print('Val Accuracy: ' + str(round(acc.val,4)))
+		self.logger.info('Validating epoch number '+str(self.cur_epoch)+' | loss: '
+			+str(round(loss.val,5))+' - accuracy: '+str(round(acc.val,5)))
