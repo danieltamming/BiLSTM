@@ -21,7 +21,7 @@ class ProConAgent:
 		self.input_length = 25
 		self.word2vec_dim = 300
 		self.num_classes = 2
-		self.num_epochs = 3
+		self.num_epochs = 2
 		self.embed_filename = 'data/embeddings.txt'
 		self.train_path = 'data/train/'
 		self.test_path = 'data/test/'
@@ -36,11 +36,11 @@ class ProConAgent:
 			dictionary = self.loaders.getFold(fold_count)
 			self.train_loader = dictionary['train_loader']
 			self.val_loader = dictionary['val_loader']
+			self.model.reset_parameters()
 			self.train()
 
 	def train(self):
 		for i in range(1, self.num_epochs+1):
-			print('Epoch '+str(i))
 			self.train_one_epoch()
 			self.validate()
 
@@ -85,5 +85,6 @@ class ProConAgent:
 		print('Val Loss: ' + str(round(val_loss/len(self.val_loader),4)))
 		print('Val Accuracy: ' + str(round(float(correct)/7330,3)))
 
-agent = ProConAgent()
-agent.run()
+if __name__ == "__main__":
+	agent = ProConAgent()
+	agent.run()

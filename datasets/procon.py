@@ -68,17 +68,3 @@ class ProConDataLoader:
 				folds[i] += class_indices[j][i::self.num_folds]
 			random.shuffle(folds[i])
 		return folds
-
-
-# train_path = 'data/train/'
-# train_set = PCDataset(train_path, word2vec_filename, num_classes=2, input_length=input_length)
-# folds = getSplitIndices(train_set)
-
-# val_idxs = folds[fold_count]
-# train_idxs = [idx for i,fold in enumerate(folds) if i!=fold_count for idx in fold]
-
-# val_sampler = SubsetRandomSampler(val_idxs)
-# train_sampler = SubsetRandomSampler(train_idxs)
-
-# val_loader = DataLoader(train_set, batch_size=128, shuffle=False, sampler=val_sampler)
-# train_loader = DataLoader(train_set, batch_size=128, shuffle=False, sampler=train_sampler)
