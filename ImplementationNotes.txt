@@ -36,3 +36,8 @@ Preprocessing / Embeddings if assigning OOV special token:
 4 - count and sort words by decreasing frequency
 5 - tokenize reviews according to frequency and 1s for not appearing in embeddings
 6 - store word embeddings for words that are in collections counter
+
+
+
+- revert to previous commit on github
+- why did I get memory error?

@@ -12,6 +12,7 @@ import random
 
 import argparse
 import json
+from easydict import EasyDict
 
 from graphs.models.bilstm import BiLSTM
 from graphs.losses.loss import CrossEntropyLoss
@@ -28,18 +29,20 @@ class ProConAgent:
 		self.embed_filename = config.embed_filename
 		self.train_path = config.train_path
 		self.test_path = config.test_path
-		self.loaders = ProConDataLoader(self.train_path, self.test_path, self.embed_filename)
 		self.model = BiLSTM(self.word2vec_dim, self.num_classes)
 		if torch.cuda.is_available(): self.model = self.model.cuda()
+		self.loaders = ProConDataLoader(self.train_path, self.test_path, self.embed_filename)
 		self.loss = CrossEntropyLoss()
 		self.optimizer = Adam(self.model.parameters())
+		# Initialize model here?
 
 	def run(self):
 		for fold_count in range(5):
+			# re initialize model
 			dictionary = self.loaders.getFold(fold_count)
 			self.train_loader = dictionary['train_loader']
 			self.val_loader = dictionary['val_loader']
-			self.model.reset_parameters()
+			self.validate()
 			self.train()
 
 	def train(self):
@@ -89,7 +92,7 @@ class ProConAgent:
 		print('Val Accuracy: ' + str(round(float(correct)/7330,3)))
 
 if __name__ == "__main__":
-	with open('configs/bilstm.json') as cf:
-		config_dict = json.load(f)
+	with open('configs/bilstm.json') as f:
+		config = EasyDict(json.load(f))
 	agent = ProConAgent(config)
 	agent.run()
