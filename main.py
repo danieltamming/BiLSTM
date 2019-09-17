@@ -22,16 +22,10 @@ random.seed(314)
 
 class ProConAgent:
 	def __init__(self, config):
-		self.input_length = config.input_length
-		self.word2vec_dim = config.word2vec_dim
-		self.num_classes = config.num_classes
-		self.num_epochs = config.num_epochs
-		self.embed_filename = config.embed_filename
-		self.train_path = config.train_path
-		self.test_path = config.test_path
-		self.model = BiLSTM(self.word2vec_dim, self.num_classes)
+		self.config = config
+		self.model = BiLSTM(self.config)
 		if torch.cuda.is_available(): self.model = self.model.cuda()
-		self.loaders = ProConDataLoader(self.train_path, self.test_path, self.embed_filename)
+		self.loaders = ProConDataLoader(self.config)
 		self.loss = CrossEntropyLoss()
 		self.optimizer = Adam(self.model.parameters())
 
@@ -45,7 +39,7 @@ class ProConAgent:
 			self.train()
 
 	def train(self):
-		for i in range(1, self.num_epochs+1):
+		for i in range(1, self.config.num_epochs+1):
 			self.train_one_epoch()
 			self.validate()
 

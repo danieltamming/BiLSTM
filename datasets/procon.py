@@ -37,34 +37,32 @@ class ProConDataset(Dataset):
 		return review_embd, self.labels[idx]
 
 class ProConDataLoader:
-	def __init__(self, train_path, test_path, embed_path, batch_size=128, num_folds=5, num_classes=2, input_length=25):
-		self.batch_size = batch_size
-		self.num_folds = num_folds
-		self.num_classes = num_classes
-		self.train_set = ProConDataset(train_path, embed_path, input_length=input_length)
-		self.test_set = ProConDataset(test_path, embed_path, input_length=input_length)
+	def __init__(self, config):
+		self.config = config
+		self.train_set = ProConDataset(self.config.train_path, self.config.embed_filename, input_length=self.config.input_length)
+		self.test_set = ProConDataset(self.config.test_path, self.config.embed_filename, input_length=self.config.input_length)
 		self.folds = self.__getSplitIndices()
 
 	def getFold(self, fold_num=0):
 		val_idxs = self.folds[fold_num]
 		val_sampler = SubsetRandomSampler(val_idxs)
-		val_loader = DataLoader(self.train_set, self.batch_size, sampler=val_sampler)
+		val_loader = DataLoader(self.train_set, self.config.batch_size, sampler=val_sampler)
 		train_idxs = [idx for i,fold in enumerate(self.folds) if i!=fold_num for idx in fold]
 		train_sampler = SubsetRandomSampler(train_idxs)
-		train_loader = DataLoader(self.train_set, self.batch_size, sampler=train_sampler)
+		train_loader = DataLoader(self.train_set, self.config.batch_size, sampler=train_sampler)
 		return {'val_loader':val_loader, 'train_loader':train_loader}
 
 	def getTestSet(self):
-		return DataLoader(self.test_set, self.batch_size)
+		return DataLoader(self.test_set, self.config.batch_size)
 
 	def __getSplitIndices(self):
-		class_indices = [[] for _ in range(self.num_classes)]
-		for i in range(self.num_classes):
+		class_indices = [[] for _ in range(self.config.num_classes)]
+		for i in range(self.config.num_classes):
 			class_indices[i] = [j for j, label in enumerate(self.train_set.labels) if label == i]
 			random.shuffle(class_indices[i])
-		folds = [[] for _ in range(self.num_folds)]
-		for i in range(self.num_folds):
-			for j in range(self.num_classes):
-				folds[i] += class_indices[j][i::self.num_folds]
+		folds = [[] for _ in range(self.config.num_folds)]
+		for i in range(self.config.num_folds):
+			for j in range(self.config.num_classes):
+				folds[i] += class_indices[j][i::self.config.num_folds]
 			random.shuffle(folds[i])
 		return folds
