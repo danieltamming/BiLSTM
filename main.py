@@ -38,7 +38,8 @@ class ProConAgent:
 
 	def run(self):
 		for fold_count in range(5):
-			# re initialize model
+			self.model = BiLSTM(self.word2vec_dim, self.num_classes)
+			if torch.cuda.is_available(): self.model = self.model.cuda()
 			dictionary = self.loaders.getFold(fold_count)
 			self.train_loader = dictionary['train_loader']
 			self.val_loader = dictionary['val_loader']
