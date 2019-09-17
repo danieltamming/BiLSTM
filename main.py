@@ -34,12 +34,10 @@ class ProConAgent:
 		self.loaders = ProConDataLoader(self.train_path, self.test_path, self.embed_filename)
 		self.loss = CrossEntropyLoss()
 		self.optimizer = Adam(self.model.parameters())
-		# Initialize model here?
 
 	def run(self):
 		for fold_count in range(5):
-			self.model = BiLSTM(self.word2vec_dim, self.num_classes)
-			if torch.cuda.is_available(): self.model = self.model.cuda()
+			# Initialize model here?
 			dictionary = self.loaders.getFold(fold_count)
 			self.train_loader = dictionary['train_loader']
 			self.val_loader = dictionary['val_loader']
