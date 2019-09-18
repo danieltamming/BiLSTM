@@ -27,15 +27,18 @@ def get_accuracy(pred, target):
 	return float(correct)/target.shape[0]
 
 class EarlyStopper:
-	def __init__(self, patience):
+	def __init__(self, patience, min_epochs):
 		self.patience = patience
 		self.best = 0
 		self.since_improved = 0
+		self.min_epochs = min_epochs
+		self.epoch_count = 0
 
 	def update_and_check(self, acc):
+		self.epoch_count += 1
 		if self.best < acc:
 			self.best = acc
 			self.since_improved = 0
 		else:
 			self.since_improved += 1
-		return self.since_improved > self.patience
+		return self.since_improved > self.patience and self.epoch_count > self.min_epochs

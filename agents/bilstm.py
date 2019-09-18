@@ -47,7 +47,7 @@ class BiLSTMAgent:
 
 	def train(self):
 		if self.config.mode == 'crossval':
-			stopper = EarlyStopper(self.config.patience)
+			stopper = EarlyStopper(self.config.patience, self.config.min_epochs)
 			for self.cur_epoch in range(self.config.num_epochs):
 				self.train_one_epoch()
 				acc,_ = self.validate()
