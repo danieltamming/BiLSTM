@@ -1,8 +1,6 @@
 import os
 import string
 import re
-import numpy as np
-import pandas as pd
 from collections import Counter
 from tqdm import tqdm
 

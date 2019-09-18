@@ -1,18 +1,10 @@
 import numpy as np
-import pandas as pd
-from collections import Counter
 from tqdm import tqdm
 import logging
 import time
 import torch
 import torch.nn as nn
-from torch.utils.data import Dataset, DataLoader
-from torch.utils.data.sampler import SubsetRandomSampler
 from torch.optim import Adam
-
-import argparse
-import json
-from easydict import EasyDict
 
 from graphs.models.bilstm import BiLSTM
 from graphs.losses.loss import CrossEntropyLoss
@@ -43,15 +35,15 @@ class BiLSTMAgent:
 				print('Fold number '+str(fold_count))
 				self.logger.info('Fold number '+str(fold_count))
 				self.train_loader, self.val_loader = self.loaders.getFold(fold_count)
-				self.train()
-				# acc,_ = self.validate()
+				# self.train()
+				acc,_ = self.validate()
 
 		elif self.config.mode == 'test':
 			self.train_loader = self.loaders.getTrainLoader()
 			self.val_loader = self.loaders.getTestLoader()
 			self.initialize_model()
 			self.train()
-			acc,_ = self.validate()
+			self.validate()
 
 	def train(self):
 		if self.config.mode == 'crossval':
@@ -70,7 +62,6 @@ class BiLSTMAgent:
 
 	def train_one_epoch(self):
 		self.model.train()
-
 		loss = AverageMeter()
 		acc = AverageMeter()
 		for x, y in tqdm(self.train_loader):
