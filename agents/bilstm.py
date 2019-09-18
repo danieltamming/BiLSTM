@@ -55,17 +55,17 @@ class BiLSTMAgent:
 
 	def train(self):
 		for self.cur_epoch in range(self.config.num_epochs):
-			start_time = time.time()
+			# start_time = time.time()
 			self.train_one_epoch()
 			if self.config.mode == 'crossval': self.validate()
-			print(time.time()-start_time)
+			# print(time.time()-start_time)
 
 	def train_one_epoch(self):
 		self.model.train()
 
 		loss = AverageMeter()
 		acc = AverageMeter()
-		for x, y in self.train_loader:
+		for x, y in tqdm(self.train_loader):
 			x = x.float()
 			if torch.cuda.is_available(): 
 				x = x.cuda()
