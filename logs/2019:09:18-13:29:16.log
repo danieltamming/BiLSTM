@@ -1,0 +1,18 @@
+INFO:BiLSTMAgent:Using 0.05 of the dataset.
+INFO:BiLSTMAgent:Fold number 0
+INFO:BiLSTMAgent:Validating epoch 0 | loss: 0.69332 - accuracy: 0.50036
+INFO:BiLSTMAgent:Fold number 1
+INFO:BiLSTMAgent:Validating epoch 0 | loss: 0.69351 - accuracy: 0.49964
+INFO:BiLSTMAgent:Fold number 2
+INFO:BiLSTMAgent:Validating epoch 0 | loss: 0.69359 - accuracy: 0.49964
+INFO:BiLSTMAgent:Fold number 3
+INFO:BiLSTMAgent:Validating epoch 0 | loss: 0.69392 - accuracy: 0.49964
+INFO:BiLSTMAgent:Fold number 4
+INFO:BiLSTMAgent:Validating epoch 0 | loss: 0.69315 - accuracy: 0.49964
+INFO:BiLSTMAgent:Fold number 5
+INFO:BiLSTMAgent:Validating epoch 0 | loss: 0.69325 - accuracy: 0.49964
+INFO:BiLSTMAgent:Fold number 6
+INFO:BiLSTMAgent:Validating epoch 0 | loss: 0.69342 - accuracy: 0.49964
+INFO:BiLSTMAgent:Fold number 7
+INFO:BiLSTMAgent:Validating epoch 0 | loss: 0.69907 - accuracy: 0.49964
+INFO:BiLSTMAgent:Fold number 8

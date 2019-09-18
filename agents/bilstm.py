@@ -55,8 +55,10 @@ class BiLSTMAgent:
 
 	def train(self):
 		for self.cur_epoch in range(self.config.num_epochs):
+			start_time = time.time()
 			self.train_one_epoch()
 			if self.config.mode == 'crossval': self.validate()
+			print(time.time()-start_time)
 
 	def train_one_epoch(self):
 		self.model.train()
