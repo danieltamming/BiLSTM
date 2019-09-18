@@ -1,10 +1,10 @@
 import numpy as np
-from tqdm import tqdm
 import logging
 import time
 import torch
 import torch.nn as nn
 from torch.optim import Adam
+from tqdm import tqdm
 
 from graphs.models.bilstm import BiLSTM
 from graphs.losses.loss import CrossEntropyLoss
