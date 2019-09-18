@@ -38,4 +38,4 @@ class EarlyStopper:
 			self.since_improved = 0
 		else:
 			self.since_improved += 1
-		return self.since_improved <= self.patience
+		return self.since_improved > self.patience

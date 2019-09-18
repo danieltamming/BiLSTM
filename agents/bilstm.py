@@ -60,8 +60,8 @@ class BiLSTMAgent:
 				self.train_one_epoch()
 				acc,_ = self.validate()
 				if stopper.update_and_check(acc): 
-					print('Stopped early (patience '+str(self.config.patience)+').')
-					self.logger.info('Stopped early (patience '+str(self.config.patience)+').')
+					print('Stopped early with patience '+str(self.config.patience))
+					self.logger.info('Stopped early with patience '+str(self.config.patience))
 					break
 
 		if self.config.mode == 'test':
