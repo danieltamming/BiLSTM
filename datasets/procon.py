@@ -28,14 +28,14 @@ class ProConDataLoader:
 	def getFold(self, fold_num=0):
 		val_idxs = self.folds[fold_num]
 		val_sampler = SubsetRandomSampler(val_idxs)
-		val_loader = DataLoader(self.train_set, self.config.batch_size, sampler=val_sampler)
+		val_loader = DataLoader(self.train_set, self.config.batch_size, num_workers=self.config.num_workers, sampler=val_sampler)
 		train_idxs = [idx for i,fold in enumerate(self.folds) if i!=fold_num for idx in fold]
 		train_sampler = SubsetRandomSampler(train_idxs)
-		train_loader = DataLoader(self.train_set, self.config.batch_size, sampler=train_sampler)
+		train_loader = DataLoader(self.train_set, self.config.batch_size, num_workers=self.config.num_workers, sampler=train_sampler)
 		return train_loader, val_loader
 
 	def getTrainLoader(self):
-		return DataLoader(self.train_set, self.config.batch_size)
+		return DataLoader(self.train_set, self.config.batch_size, num_workers=self.config.num_workers)
 
 	def getTestLoader(self):
-		return DataLoader(self.test_set, self.config.batch_size)
+		return DataLoader(self.test_set, self.config.batch_size, num_workers=self.config.num_workers)

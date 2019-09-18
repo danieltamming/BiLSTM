@@ -32,6 +32,7 @@ class BiLSTMAgent:
 
 	def initialize_model(self):
 		self.model = BiLSTM(self.config)
+		if torch.cuda.device_count() > 1: self.model = nn.DataParallel(self.model)
 		if torch.cuda.is_available(): self.model = self.model.cuda()
 		self.optimizer = Adam(self.model.parameters())
 
@@ -43,6 +44,7 @@ class BiLSTMAgent:
 				self.logger.info('Fold number '+str(fold_count))
 				self.train_loader, self.val_loader = self.loaders.getFold(fold_count)
 				self.train()
+				# self.validate()
 
 		elif self.config.mode == 'test':
 			self.train_loader = self.loaders.getTrainLoader()
@@ -77,9 +79,9 @@ class BiLSTMAgent:
 			acc.update(accuracy, y.shape[0])
 
 		print('Training epoch '+str(self.cur_epoch)+' | loss: '
-			+str(loss.val)+' - accuracy: '+str(acc.val))
+			+str(round(loss.val,5))+' - accuracy: '+str(round(acc.val,5)))
 		self.logger.info('Training epoch '+str(self.cur_epoch)+' | loss: '
-			+str(loss.val)+' - accuracy: '+str(acc.val))
+			+str(round(loss.val,5))+' - accuracy: '+str(round(acc.val,5)))
 
 	def validate(self):
 		self.model.eval()
