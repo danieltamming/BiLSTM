@@ -7,6 +7,8 @@
 	"batch_size":1024,
 	"num_workers":8,
 
+	"patience":3,
+
 	"seed":314,
 
 	"mode":"crossval",

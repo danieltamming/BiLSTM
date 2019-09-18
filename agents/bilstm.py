@@ -17,7 +17,7 @@ from easydict import EasyDict
 from graphs.models.bilstm import BiLSTM
 from graphs.losses.loss import CrossEntropyLoss
 from datasets.procon import ProConDataLoader
-from utils.metrics import AverageMeter, get_accuracy
+from utils.metrics import AverageMeter, get_accuracy, EarlyStopper
 
 class BiLSTMAgent:
 	def __init__(self, config, pct_usage=1):
@@ -44,19 +44,26 @@ class BiLSTMAgent:
 				self.logger.info('Fold number '+str(fold_count))
 				self.train_loader, self.val_loader = self.loaders.getFold(fold_count)
 				self.train()
-				# self.validate()
+				# acc,_ = self.validate()
 
 		elif self.config.mode == 'test':
 			self.train_loader = self.loaders.getTrainLoader()
 			self.val_loader = self.loaders.getTestLoader()
 			self.initialize_model()
 			self.train()
-			self.validate()
+			acc,_ = self.validate()
 
 	def train(self):
-		for self.cur_epoch in range(self.config.num_epochs):
-			self.train_one_epoch()
-			if self.config.mode == 'crossval': self.validate()
+		if self.config.mode == 'crossval':
+			stopper = EarlyStopper()
+			for self.cur_epoch in range(self.config.num_epochs):
+				self.train_one_epoch()
+				acc,_ = self.validate()
+				if stopper.update_and_check(acc): break
+
+		if self.config.mode == 'test':
+			for self.cur_epoch in range(self.num_epochs):
+				self.train_one_epoch()
 
 	def train_one_epoch(self):
 		self.model.train()
@@ -104,3 +111,4 @@ class BiLSTMAgent:
 			+str(round(loss.val,5))+' - accuracy: '+str(round(acc.val,5)))
 		self.logger.info('Validating epoch '+str(self.cur_epoch)+' | loss: '
 			+str(round(loss.val,5))+' - accuracy: '+str(round(acc.val,5)))
+		return acc.val, loss.val

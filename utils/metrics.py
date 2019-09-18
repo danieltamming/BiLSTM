@@ -25,3 +25,17 @@ def get_accuracy(pred, target):
 	_, pred = torch.max(pred, 1)
 	correct = (pred==target).sum().item()
 	return float(correct)/target.shape[0]
+
+class EarlyStopper:
+	def __init__(self, patience):
+		self.patience = patience
+		self.best = 0
+		self.since_improved = 0
+
+	def update_and_check(acc):
+		if self.best < acc:
+			self.best = acc
+			self.since_improved = 0
+		else:
+			self.since_improved += 1
+		return self.since_improved <= self.patience
