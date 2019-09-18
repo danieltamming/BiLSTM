@@ -7,7 +7,7 @@ from collections import Counter
 from tqdm import tqdm
 
 word2vec_orig = './../DownloadedData/enwiki_20180420_300d.txt'
-word2vec_target = 'data/ProCon/embeddings.txt'
+word2vec_target = 'data/procon/embeddings.txt'
 # embeddings = KeyedVectors.load_word2vec_format(word2vec_orig, binary=False, limit=10)
 
 reviews_path = './../DownloadedData/pros-cons/'
@@ -72,11 +72,13 @@ def write_tknzd_splits(tknzd_reviews_list, test_pct=0.20):
 
 	for i, tknzd_reviews in enumerate(test_list):
 		with open(test_path+str(i)+'.txt', 'w') as f:
+			f.write(str(len(tknzd_reviews))+'\n\n')
 			for review in tknzd_reviews:
 				f.write(' '.join([str(num) for num in review])+'\n')
 
 	for i, tknzd_reviews in enumerate(train_list):
 		with open(train_path+str(i)+'.txt', 'w') as f:
+			f.write(str(len(tknzd_reviews))+'\n\n')
 			for review in tknzd_reviews:
 				f.write(' '.join([str(num) for num in review])+'\n')
 

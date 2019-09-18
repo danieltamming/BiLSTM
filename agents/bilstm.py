@@ -22,6 +22,8 @@ from utils.metrics import AverageMeter, get_accuracy
 
 random.seed(314)
 
+percentages = [0.05] + [0.1*i for i in range(1,11)]
+
 class BiLSTMAgent:
 	def __init__(self, config):
 		self.config = config
@@ -29,18 +31,20 @@ class BiLSTMAgent:
 		self.cur_epoch = 0
 		self.model = BiLSTM(self.config)
 		if torch.cuda.is_available(): self.model = self.model.cuda()
-		self.loaders = ProConDataLoader(self.config)
 		self.loss = CrossEntropyLoss()
 		self.optimizer = Adam(self.model.parameters())
 
 	def run(self):
-		for fold_count in range(5):
-			# Initialize model here?
-			dictionary = self.loaders.getFold(fold_count)
-			self.train_loader = dictionary['train_loader']
-			self.val_loader = dictionary['val_loader']
-			self.validate()
-			self.train()
+		for self.pct_usage in percentages:
+			self.logger.info('Using '+str(self.pct_usage)+' of the dataset.')
+			self.loaders = ProConDataLoader(self.config, self.pct_usage)
+			for fold_count in range(self.config.num_folds):
+				self.logger.info('Fold number '+str(fold_count))
+				dictionary = self.loaders.getFold(fold_count)
+				self.train_loader = dictionary['train_loader']
+				self.val_loader = dictionary['val_loader']
+				self.validate()
+				# self.train()
 
 	def train(self):
 		for self.cur_epoch in range(1, self.config.num_epochs+1):

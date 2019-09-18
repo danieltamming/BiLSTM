@@ -8,14 +8,16 @@ import random
 random.seed(314)
 
 class ProConDataset(Dataset):
-	# Pros Cons Dataset
-	def __init__(self, data_path, embedding_file, num_classes=2, input_length=25):
-		# some reviews are nonexisistent
+	def __init__(self, data_path, embedding_file, num_classes=2, input_length=25, pct_usage=1):
 		self.labels, self.reviews, embed_list = [], [], []
 		for label in range(num_classes):
 			data_file = data_path + str(label) + '.txt'
 			with open(data_file, 'r') as f:
-				for line in f.read().splitlines():
+				num_reviews = int(f.readline())
+				num_to_read = int(pct_usage*num_reviews)
+				f.readline()
+				for _ in range(num_to_read):
+					line = f.readline()
 					self.labels.append(label)
 					review = [int(num) for num in line.split()]
 					if len(review) < input_length: review += (input_length-len(review))*[0]
@@ -37,11 +39,13 @@ class ProConDataset(Dataset):
 		return review_embd, self.labels[idx]
 
 class ProConDataLoader:
-	def __init__(self, config):
+	def __init__(self, config, pct_usage=1):
 		self.config = config
-		self.train_set = ProConDataset(self.config.train_path, self.config.embed_filename, input_length=self.config.input_length)
+		self.pct_usage = pct_usage
+		self.train_set = ProConDataset(self.config.train_path, self.config.embed_filename, input_length=self.config.input_length, pct_usage=self.pct_usage)
 		self.test_set = ProConDataset(self.config.test_path, self.config.embed_filename, input_length=self.config.input_length)
 		self.folds = self.__getSplitIndices()
+		print(len(self.train_set))
 
 	def getFold(self, fold_num=0):
 		val_idxs = self.folds[fold_num]
