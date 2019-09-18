@@ -14,7 +14,9 @@ class BiLSTM(nn.Module):
 		self.sm = nn.Softmax(dim=1)
 
 	def forward(self, x):
+		self.lstm1.flatten_parameters()
 		output1, _ = self.lstm1(x)
+		self.lstm2.flatten_parameters()
 		_, (h2, _) = self.lstm2(output1)
 		h2 = h2.permute(1,0,2)
 		h2 = h2.contiguous().view(h2.shape[0],-1)
