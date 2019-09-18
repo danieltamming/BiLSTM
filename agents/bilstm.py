@@ -35,9 +35,8 @@ class BiLSTMAgent:
 				print('Fold number '+str(fold_count))
 				self.logger.info('Fold number '+str(fold_count))
 				self.train_loader, self.val_loader = self.loaders.getFold(fold_count)
-				# self.train()
-				acc,_ = self.validate()
-				break
+				self.train()
+				# acc,_ = self.validate()
 
 		elif self.config.mode == 'test':
 			self.train_loader = self.loaders.getTrainLoader()
