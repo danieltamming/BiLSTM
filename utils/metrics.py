@@ -32,7 +32,7 @@ class EarlyStopper:
 		self.best = 0
 		self.since_improved = 0
 
-	def update_and_check(acc):
+	def update_and_check(self, acc):
 		if self.best < acc:
 			self.best = acc
 			self.since_improved = 0
