@@ -9,7 +9,6 @@ import torch.nn as nn
 from torch.utils.data import Dataset, DataLoader
 from torch.utils.data.sampler import SubsetRandomSampler
 from torch.optim import Adam
-import random
 
 import argparse
 import json
@@ -20,36 +19,42 @@ from graphs.losses.loss import CrossEntropyLoss
 from datasets.procon import ProConDataLoader
 from utils.metrics import AverageMeter, get_accuracy
 
-random.seed(314)
-
-percentages = [0.05] + [0.1*i for i in range(1,11)]
-
 class BiLSTMAgent:
-	def __init__(self, config):
+	def __init__(self, config, pct_usage=1):
 		self.config = config
+		self.pct_usage = pct_usage
 		self.logger = logging.getLogger('BiLSTMAgent')
 		self.cur_epoch = 0
+		self.loss = CrossEntropyLoss()
+		print('Using '+str(self.pct_usage)+' of the dataset.')
+		self.logger.info('Using '+str(self.pct_usage)+' of the dataset.')
+		self.loaders = ProConDataLoader(self.config, self.pct_usage)
+
+	def initialize_model(self):
 		self.model = BiLSTM(self.config)
 		if torch.cuda.is_available(): self.model = self.model.cuda()
-		self.loss = CrossEntropyLoss()
 		self.optimizer = Adam(self.model.parameters())
 
 	def run(self):
-		for self.pct_usage in percentages:
-			self.logger.info('Using '+str(self.pct_usage)+' of the dataset.')
-			self.loaders = ProConDataLoader(self.config, self.pct_usage)
+		if self.config.mode == 'crossval':
 			for fold_count in range(self.config.num_folds):
+				self.initialize_model()
+				print('Fold number '+str(fold_count))
 				self.logger.info('Fold number '+str(fold_count))
-				dictionary = self.loaders.getFold(fold_count)
-				self.train_loader = dictionary['train_loader']
-				self.val_loader = dictionary['val_loader']
-				self.validate()
-				# self.train()
+				self.train_loader, self.val_loader = self.loaders.getFold(fold_count)
+				self.train()
+
+		elif self.config.mode == 'test':
+			self.train_loader = self.loaders.getTrainLoader()
+			self.val_loader = self.loaders.getTestLoader()
+			self.initialize_model()
+			self.train()
+			self.validate()
 
 	def train(self):
-		for self.cur_epoch in range(1, self.config.num_epochs+1):
-			# self.train_one_epoch()
-			self.validate()
+		for self.cur_epoch in range(self.config.num_epochs):
+			self.train_one_epoch()
+			if self.config.mode == 'crossval': self.validate()
 
 	def train_one_epoch(self):
 		self.model.train()
@@ -71,9 +76,9 @@ class BiLSTMAgent:
 			accuracy = get_accuracy(output, y)
 			acc.update(accuracy, y.shape[0])
 
-		print('Train Loss: ' + str(round(loss.val,4)))
-		print('Train Accuracy: '+str(round(acc.val,4)))
-		self.logger.info('Training epoch number '+str(self.cur_epoch)+' | loss: '
+		print('Training epoch '+str(self.cur_epoch)+' | loss: '
+			+str(loss.val)+' - accuracy: '+str(acc.val))
+		self.logger.info('Training epoch '+str(self.cur_epoch)+' | loss: '
 			+str(loss.val)+' - accuracy: '+str(acc.val))
 
 	def validate(self):
@@ -93,7 +98,7 @@ class BiLSTMAgent:
 			accuracy = get_accuracy(output, y)
 			acc.update(accuracy, y.shape[0])
 
-		print('Val Loss: ' + str(round(loss.val,4)))
-		print('Val Accuracy: ' + str(round(acc.val,4)))
-		self.logger.info('Validating epoch number '+str(self.cur_epoch)+' | loss: '
+		print('Validating epoch '+str(self.cur_epoch)+' | loss: '
+			+str(round(loss.val,5))+' - accuracy: '+str(round(acc.val,5)))
+		self.logger.info('Validating epoch '+str(self.cur_epoch)+' | loss: '
 			+str(round(loss.val,5))+' - accuracy: '+str(round(acc.val,5)))

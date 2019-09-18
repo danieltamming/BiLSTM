@@ -59,7 +59,7 @@ def tknz(reviews_list, word_to_num):
 		reviews_list[i] = reviews
 	return reviews_list
 
-def write_tknzd_splits(tknzd_reviews_list, test_pct=0.20):
+def write_tknzd_splits(tknzd_reviews_list, test_pct=0.10):
 	data_path = 'data/procon/'
 	if not os.path.exists(data_path): os.mkdir(data_path)
 	test_path = data_path + 'test/'

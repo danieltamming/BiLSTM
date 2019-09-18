@@ -1,0 +1,16 @@
+{
+	"input_length": 25,
+	"embed_dim": 300,
+	"num_epochs": 100,
+	"num_classes": 2,
+	"num_folds":10,
+	"batch_size":128,
+
+	"seed":314,
+
+	"mode":"crossval",
+
+	"embed_filename": "data/procon/embeddings.txt",
+	"train_path": "data/procon/train/",
+	"test_path": "data/procon/test/"
+}

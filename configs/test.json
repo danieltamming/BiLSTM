@@ -3,8 +3,12 @@
 	"embed_dim": 300,
 	"num_epochs": 3,
 	"num_classes": 2,
-	"num_folds":5,
+	"num_folds":1,
 	"batch_size":128,
+
+	"seed":314,
+
+	"mode":"test",
 
 	"embed_filename": "data/procon/embeddings.txt",
 	"train_path": "data/procon/train/",
