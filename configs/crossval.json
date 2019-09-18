@@ -7,7 +7,7 @@
 	"batch_size":1024,
 	"num_workers":8,
 
-	"patience":3,
+	"patience":10,
 
 	"seed":314,
 
