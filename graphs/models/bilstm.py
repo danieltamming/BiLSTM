@@ -16,8 +16,10 @@ class BiLSTM(nn.Module):
 	def forward(self, x):
 		self.lstm1.flatten_parameters()
 		output1, _ = self.lstm1(x)
+		output1 = self.drop1(output1)
 		self.lstm2.flatten_parameters()
 		_, (h2, _) = self.lstm2(output1)
+		h2 = self.drop2(h2)
 		h2 = h2.permute(1,0,2)
 		h2 = h2.contiguous().view(h2.shape[0],-1)
 		d1 = self.dense1(h2)
