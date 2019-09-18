@@ -9,8 +9,6 @@
 
 	"patience":3,
 
-	"percentages":[1],
-
 	"seed":314,
 
 	"mode":"crossval",

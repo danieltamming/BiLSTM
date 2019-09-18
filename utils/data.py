@@ -31,7 +31,7 @@ def get_sequences(config, data_path, pct_usage):
 	for label in range(config.num_classes):
 		data_file = data_path + str(label) + '.txt'
 		with open(data_file) as f:
-			num_seqs = f.readline()
+			num_seqs = int(f.readline())
 			num_to_read = int(pct_usage*num_seqs)
 			f.readline()
 			for _ in range(num_to_read):

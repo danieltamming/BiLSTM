@@ -7,7 +7,7 @@ from torch.utils.data.sampler import SubsetRandomSampler
 from utils.data import get_split_indices, get_embeddings, get_sequences
 
 class ProConDataset(Dataset):
-	def __init__(self, config, data_path, embedding_file, pct_usage=1):
+	def __init__(self, config, data_path, embedding_file, pct_usage):
 		self.reviews, self.labels = get_sequences(config, data_path, pct_usage)
 		self.embeddings = get_embeddings(embedding_file)
 
@@ -19,11 +19,11 @@ class ProConDataset(Dataset):
 		return review_embd, self.labels[idx]
 
 class ProConDataLoader:
-	def __init__(self, config, pct_usage=1):
+	def __init__(self, config, pct_usage):
 		self.config = config
 		self.pct_usage = pct_usage
-		self.train_set = ProConDataset(self.config, self.config.train_path, self.config.embed_filename)
-		self.test_set = ProConDataset(self.config, self.config.test_path, self.config.embed_filename)
+		self.train_set = ProConDataset(self.config, self.config.train_path, self.config.embed_filename, self.pct_usage)
+		if config.mode == 'test': self.test_set = ProConDataset(self.config, self.config.test_path, self.config.embed_filename, 1)
 		self.folds = get_split_indices(self.config.seed, self.config.num_classes, self.config.num_folds, self.train_set.labels)
 
 	def getFold(self, fold_num=0):

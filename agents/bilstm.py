@@ -37,6 +37,7 @@ class BiLSTMAgent:
 				self.train_loader, self.val_loader = self.loaders.getFold(fold_count)
 				# self.train()
 				acc,_ = self.validate()
+				break
 
 		elif self.config.mode == 'test':
 			self.train_loader = self.loaders.getTrainLoader()
