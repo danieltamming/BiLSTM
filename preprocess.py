@@ -1,14 +1,15 @@
 import os
 import string
 import re
+import argparse
 from collections import Counter
 from tqdm import tqdm
 
-word2vec_orig = './../DownloadedData/enwiki_20180420_300d.txt'
-word2vec_target = 'data/procon/embeddings.txt'
-# embeddings = KeyedVectors.load_word2vec_format(word2vec_orig, binary=False, limit=10)
-
-reviews_path = './../DownloadedData/pros-cons/'
+def get_args():
+	parser = argparse.ArgumentParser()
+	parser.add_argument('-pth', '--datapath', default='./../DownloadedData/',
+		type=str, help='Folder containing embeddings and raw data?')
+	return parser.parse_args()
 
 def get_reviews(review_path):
 	reviews = []
@@ -80,6 +81,10 @@ def write_tknzd_splits(tknzd_reviews_list, test_pct=0.10):
 			for review in tknzd_reviews:
 				f.write(' '.join([str(num) for num in review])+'\n')
 
+args = get_args()
+word2vec_orig = args.datapath + 'enwiki_20180420_300d.txt'
+reviews_path = args.datapath + 'pros-cons/'
+word2vec_target = 'data/procon/embeddings.txt'
 
 reviews_pro = get_reviews(reviews_path+'IntegratedPros.txt')
 reviews_con = get_reviews(reviews_path+'IntegratedCons.txt')
