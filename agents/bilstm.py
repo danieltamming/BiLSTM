@@ -24,7 +24,7 @@ class BiLSTMAgent:
 
 	def initialize_model(self):
 		self.model = BiLSTM(self.config)
-		if torch.cuda.device_count() > 1: self.model = nn.DataParallel(self.model)
+		# if torch.cuda.device_count() > 1: self.model = nn.DataParallel(self.model)
 		if torch.cuda.is_available(): self.model = self.model.cuda()
 		self.optimizer = Adam(self.model.parameters())
 		self.model.train()
