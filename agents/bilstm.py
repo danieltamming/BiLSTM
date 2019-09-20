@@ -63,6 +63,7 @@ class BiLSTMAgent:
 				self.train_one_epoch()
 
 	def train_one_epoch(self):
+		self.model.train()
 		loss = AverageMeter()
 		acc = AverageMeter()
 		for x, y in self.train_loader:
@@ -108,5 +109,3 @@ class BiLSTMAgent:
 		self.logger.info('Validating epoch '+str(self.cur_epoch)+' | loss: '
 			+str(round(loss.val,5))+' - accuracy: '+str(round(acc.val,5)))
 		return acc.val, loss.val
-
-		self.model.train()
