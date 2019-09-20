@@ -38,7 +38,6 @@ def get_avg_accs(results_by_pct):
 	avg_accs_by_pct = {}
 	for pct, fold_accs in results_by_pct.items():
 		min_epochs = min([len(fold) for fold in fold_accs])
-		print(max([len(fold) for fold in fold_accs]))
 		for i, fold in enumerate(fold_accs):
 			fold_accs[i] = fold[:min_epochs]
 		accs = np.array(fold_accs)
@@ -46,7 +45,7 @@ def get_avg_accs(results_by_pct):
 		avg_accs_by_pct[pct] = avg_accs
 	return avg_accs_by_pct
 
-f = open('logs/2019:09:18-18:42:41.log')
+f = open('logs/crossval_joint.log')
 results_by_pct = process_file(f)
 f.close()
 
@@ -54,5 +53,6 @@ avg_accs_by_pct = get_avg_accs(results_by_pct)
 
 for pct, avg_accs in avg_accs_by_pct.items():
 	print(pct)
+	print(np.argmax(avg_accs))
 	plt.plot(avg_accs)
 	plt.show()

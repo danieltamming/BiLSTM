@@ -57,8 +57,8 @@ class BiLSTMAgent:
 				# 	break
 			self.logger.info('Stopped after '+str(self.config.num_epochs)+' epochs')
 
-		if self.config.mode == 'test':
-			for self.cur_epoch in range(self.num_epochs):
+		elif self.config.mode == 'test':
+			for self.cur_epoch in tqdm(range(self.config.num_epochs)):
 				self.train_one_epoch()
 
 	def train_one_epoch(self):
@@ -80,10 +80,11 @@ class BiLSTMAgent:
 			accuracy = get_accuracy(output, y)
 			acc.update(accuracy, y.shape[0])
 
-		print('Training epoch '+str(self.cur_epoch)+' | loss: '
-			+str(round(loss.val,5))+' - accuracy: '+str(round(acc.val,5)))
-		self.logger.info('Training epoch '+str(self.cur_epoch)+' | loss: '
-			+str(round(loss.val,5))+' - accuracy: '+str(round(acc.val,5)))
+		if self.config.mode == 'crossval':
+			print('Training epoch '+str(self.cur_epoch)+' | loss: '
+				+str(round(loss.val,5))+' - accuracy: '+str(round(acc.val,5)))
+			self.logger.info('Training epoch '+str(self.cur_epoch)+' | loss: '
+				+str(round(loss.val,5))+' - accuracy: '+str(round(acc.val,5)))
 
 	def validate(self):
 		self.model.eval()
