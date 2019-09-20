@@ -22,9 +22,6 @@ def process_pct(f):
 
 
 def process_fold(f):
-	'''
-	Gets file with 'Fold number x' as the next line to be read
-	'''
 	accs = []
 	f.readline()
 	line = f.readline().replace('INFO:BiLSTMAgent:','').rstrip('\n')
@@ -45,14 +42,39 @@ def get_avg_accs(results_by_pct):
 		avg_accs_by_pct[pct] = avg_accs
 	return avg_accs_by_pct
 
-f = open('logs/crossval_joint.log')
-results_by_pct = process_file(f)
-f.close()
+def process_crossval_log():
+	f = open('logs/crossval_joint.log')
+	results_by_pct = process_file(f)
+	f.close()
 
-avg_accs_by_pct = get_avg_accs(results_by_pct)
+	avg_accs_by_pct = get_avg_accs(results_by_pct)
 
-for pct, avg_accs in avg_accs_by_pct.items():
-	print(pct)
-	print(np.argmax(avg_accs))
-	plt.plot(avg_accs)
+	for pct, avg_accs in avg_accs_by_pct.items():
+		print(pct)
+		print(np.argmax(avg_accs))
+		plt.plot(avg_accs)
+		plt.title('Learning Curve With '+str(100*float(pct))+'% of Dataset')
+		plt.ylabel('Cross Validation Accuracy (%)')
+		plt.xlabel('Epoch')
+		plt.show()
+
+def process_test_log():
+	with open('logs/test.log') as f:
+		pcts, accs = [], []
+		line = f.readline()
+		while line:
+			line = line.replace('INFO:BiLSTMAgent:','').rstrip('\n')
+			pcts.append(float(line.split()[1]))
+			line = f.readline().replace('INFO:BiLSTMAgent:','').rstrip('\n')
+			accs.append(float(line.split()[-1]))
+			line = f.readline()
+	pcts = 100*np.array(pcts)
+	accs = 100*np.array(accs)
+	plt.plot(pcts,accs, '-bo')
+	plt.axis((0,100,70,100))
+	plt.title('Learning Curve')
+	plt.xlabel('Percent of Dataset (%)')
+	plt.ylabel('Test Accuracy (%)')
 	plt.show()
+
+process_crossval_log()
