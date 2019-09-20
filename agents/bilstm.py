@@ -27,6 +27,7 @@ class BiLSTMAgent:
 		if torch.cuda.device_count() > 1: self.model = nn.DataParallel(self.model)
 		if torch.cuda.is_available(): self.model = self.model.cuda()
 		self.optimizer = Adam(self.model.parameters())
+		self.model.train()
 
 	def run(self):
 		if self.config.mode == 'crossval':
