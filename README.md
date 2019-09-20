@@ -2,7 +2,9 @@
 A stacked bidirectional LSTM used as a baseline for training curve analysis in academic research.
 
 The model is trained on various fractions of a training set and tested on a test set of fixed size. 
-This allows the learning curves **INSERT HERE** to be created.
+This allows the learning curves like the image below to be created. 
+
+![picture](images/LearningCurvePctTest.png)
 
 ### Current Use Case
 Performs sentiment classification on the pro-con dataset introduced by Ganapathibhotla.
@@ -20,6 +22,9 @@ Test is used to determine the accuracy (as measured on the test set) of a model 
 
     python main.py --config test.json
 
+### Dataset
+The dataset consists of 45875 product reviews, 22940 and 22935 labeled favorable and unfavorable, respectively. By default the data is split into train/test sets with a ratio of 9/1. Cross validation on the training set uses 10 folds. The train/test set split can be varied by downloading the raw data and embeddings and editing and running utils/preprocess.py. The number of cross validation folds can be changed in the files contained in the configs folder. See the *Downloading and Processing Raw Data and Embeddings* section for details.
+
 ### Logs
 Each run creates a timestamped log file containing training accuracy and other valuable information about the experiment.
 
@@ -36,7 +41,7 @@ Note that the preprocessed data and embeddings necessary to run the code are alr
 
 Download the dataset from [here](https://www.cs.uic.edu/~liub/FBS/sentiment-analysis.html), at the hyperlink with the anchor text "Pros and cons dataset".
 
-Download the embeddings from [here](https://wikipedia2vec.github.io/wikipedia2vec/pretrained/) , at the hyperlink with the anchor text "300d (txt)" at the bullet point "enwiki_20180420".
+Download the embeddings from [here](https://wikipedia2vec.github.io/wikipedia2vec/pretrained/), at the hyperlink with the anchor text "300d (txt)" at the bullet point "enwiki_20180420".
 
 Decompress both files and place both in a folder outside this repository. Run the following command:
 
