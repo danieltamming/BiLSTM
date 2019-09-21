@@ -59,7 +59,7 @@ def process_crossval_log():
 		# plt.show()
 
 def process_test_log():
-	with open('logs/test.log') as f:
+	with open('logs/test150epochs.log') as f:
 		pcts, accs = [], []
 		line = f.readline()
 		while line:
@@ -77,4 +77,4 @@ def process_test_log():
 	plt.ylabel('Test Accuracy (%)')
 	plt.show()
 
-process_crossval_log()
+process_test_log()
