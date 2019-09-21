@@ -22,10 +22,13 @@ class BiLSTMAgent:
 		self.logger.info('Using '+str(self.pct_usage)+' of the dataset.')
 		self.loaders = ProConDataLoader(self.config, self.pct_usage)
 
+		self.device = torch.device('cuda:1' if torch.cuda.is_available() else 'cpu')
+
+
 	def initialize_model(self):
 		self.model = BiLSTM(self.config)
 		# if torch.cuda.device_count() > 1: self.model = nn.DataParallel(self.model)
-		if torch.cuda.is_available(): self.model = self.model.cuda()
+		if torch.cuda.is_available(): self.model = self.model.to(self.device)
 		self.optimizer = Adam(self.model.parameters())
 		self.model.train()
 
@@ -69,8 +72,8 @@ class BiLSTMAgent:
 		for x, y in self.train_loader:
 			x = x.float()
 			if torch.cuda.is_available(): 
-				x = x.cuda()
-				y = y.cuda()
+				x = x.to(self.device)
+				y = y.to(self.device)
 			output = self.model(x)
 			current_loss = self.loss(output, y)
 			self.optimizer.zero_grad()
@@ -95,8 +98,8 @@ class BiLSTMAgent:
 		for x, y in self.val_loader:
 			x = x.float()
 			if torch.cuda.is_available():
-				x = x.cuda()
-				y = y.cuda()
+				x = x.to(self.device)
+				y = y.to(self.device)
 			output = self.model(x)
 			current_loss = self.loss(output, y)
 
