@@ -28,7 +28,10 @@ class BiLSTMAgent:
 	def initialize_model(self):
 		self.model = BiLSTM(self.config)
 		# if torch.cuda.device_count() > 1: self.model = nn.DataParallel(self.model)
-		if torch.cuda.is_available(): self.model = self.model.to(self.device)
+		# if torch.cuda.is_available(): self.model = self.model.to(self.device)
+
+		self.model = self.model.to(self.device)
+
 		self.optimizer = Adam(self.model.parameters())
 		self.model.train()
 
@@ -71,9 +74,13 @@ class BiLSTMAgent:
 		acc = AverageMeter()
 		for x, y in self.train_loader:
 			x = x.float()
-			if torch.cuda.is_available(): 
-				x = x.to(self.device)
-				y = y.to(self.device)
+			# if torch.cuda.is_available(): 
+			# 	x = x.to(self.device)
+			# 	y = y.to(self.device)
+
+			x = x.to(self.device)
+			y = y.to(self.device)
+
 			output = self.model(x)
 			current_loss = self.loss(output, y)
 			self.optimizer.zero_grad()
@@ -97,9 +104,13 @@ class BiLSTMAgent:
 		acc = AverageMeter()
 		for x, y in self.val_loader:
 			x = x.float()
-			if torch.cuda.is_available():
-				x = x.to(self.device)
-				y = y.to(self.device)
+			# if torch.cuda.is_available():
+			# 	x = x.to(self.device)
+			# 	y = y.to(self.device)
+
+			x = x.to(self.device)
+			y = y.to(self.device)
+
 			output = self.model(x)
 			current_loss = self.loss(output, y)
 
