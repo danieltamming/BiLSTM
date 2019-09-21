@@ -5,7 +5,7 @@ num_folds = 10
 
 def process_file(f):
 	results_by_pct = {}
-	for _ in range(11):
+	for _ in range(14):
 		pct, arr = process_pct(f)
 		results_by_pct[pct] = arr
 	return results_by_pct
@@ -43,7 +43,7 @@ def get_avg_accs(results_by_pct):
 	return avg_accs_by_pct
 
 def process_crossval_log():
-	f = open('logs/crossval_joint.log')
+	f = open('logs/crossval.log')
 	results_by_pct = process_file(f)
 	f.close()
 
@@ -52,11 +52,11 @@ def process_crossval_log():
 	for pct, avg_accs in avg_accs_by_pct.items():
 		print(pct)
 		print(np.argmax(avg_accs))
-		plt.plot(avg_accs)
-		plt.title('Learning Curve With '+str(100*float(pct))+'% of Dataset')
-		plt.ylabel('Cross Validation Accuracy (%)')
-		plt.xlabel('Epoch')
-		plt.show()
+		# plt.plot(avg_accs)
+		# plt.title('Learning Curve With '+str(100*float(pct))+'% of Dataset')
+		# plt.ylabel('Cross Validation Accuracy (%)')
+		# plt.xlabel('Epoch')
+		# plt.show()
 
 def process_test_log():
 	with open('logs/test.log') as f:

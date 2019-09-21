@@ -1,4 +1,0 @@
-INFO:BiLSTMAgent:Using 0.02 of the dataset.
-INFO:BiLSTMAgent:Fold number 0
-INFO:BiLSTMAgent:Training epoch 0 | loss: 0.69311 - accuracy: 0.51015
-INFO:BiLSTMAgent:Validating epoch 0 | loss: 0.69293 - accuracy: 0.54762
