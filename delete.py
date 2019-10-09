@@ -1,5 +1,2 @@
+import BeautifulSoup as bs 
 
-def my_function():
-	return 1
-
-my_function()

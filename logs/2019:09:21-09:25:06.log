@@ -1,3 +1,0 @@
-INFO:BiLSTMAgent:Using 0.2 of the dataset.
-INFO:BiLSTMAgent:Validating epoch 149 | loss: 0.44024 - accuracy: 0.86834
-INFO:BiLSTMAgent:Using 0.3 of the dataset.

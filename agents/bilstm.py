@@ -72,7 +72,8 @@ class BiLSTMAgent:
 		self.model.train()
 		loss = AverageMeter()
 		acc = AverageMeter()
-		for x, y in self.train_loader:
+
+		for x, y in tqdm(self.train_loader):
 			x = x.float()
 			# if torch.cuda.is_available(): 
 			# 	x = x.to(self.device)
@@ -102,7 +103,7 @@ class BiLSTMAgent:
 		
 		loss = AverageMeter()
 		acc = AverageMeter()
-		for x, y in self.val_loader:
+		for x, y in tqdm(self.val_loader):
 			x = x.float()
 			# if torch.cuda.is_available():
 			# 	x = x.to(self.device)
