@@ -42,8 +42,8 @@ def get_avg_accs(results_by_pct):
 		avg_accs_by_pct[pct] = avg_accs
 	return avg_accs_by_pct
 
-def process_crossval_log():
-	f = open('logs/crossval.log')
+def process_crossval_log(filename):
+	f = open(filename)
 	results_by_pct = process_file(f)
 	f.close()
 
@@ -52,14 +52,15 @@ def process_crossval_log():
 	for pct, avg_accs in avg_accs_by_pct.items():
 		print(pct)
 		print(np.argmax(avg_accs))
+		print(np.max(avg_accs))
 		plt.plot(avg_accs)
 		plt.title('Learning Curve With '+str(100*float(pct))+'% of Dataset')
 		plt.ylabel('Cross Validation Accuracy (%)')
 		plt.xlabel('Epoch')
 		plt.show()
 
-def process_test_log():
-	with open('logs/test150epochs.log') as f:
+def process_test_log(filename):
+	with open(filename) as f:
 		pcts, accs = [], []
 		line = f.readline()
 		while line:
@@ -77,5 +78,7 @@ def process_test_log():
 	plt.ylabel('Test Accuracy (%)')
 	plt.show()
 
-process_crossval_log()
+filename = 'logs/sr_crossval150.log'
+filename = 'logs/crossval.log'
+process_crossval_log(filename)
 # process_test_log()
