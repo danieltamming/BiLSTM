@@ -4,8 +4,10 @@ import matplotlib.pyplot as plt
 num_folds = 10
 
 def process_file(f):
+	num_pctgs = 14
+	# num_pctgs = 7
 	results_by_pct = {}
-	for _ in range(14):
+	for _ in range(num_pctgs):
 		pct, arr = process_pct(f)
 		results_by_pct[pct] = arr
 	return results_by_pct
@@ -78,7 +80,7 @@ def process_test_log(filename):
 	plt.ylabel('Test Accuracy (%)')
 	plt.show()
 
-filename = 'logs/sr_crossval150.log'
-filename = 'logs/crossval.log'
+filename = 'logs/sr_crossval500_to30pct.log'
+# filename = 'logs/crossval.log'
 process_crossval_log(filename)
 # process_test_log()
