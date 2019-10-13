@@ -80,7 +80,7 @@ def process_test_log(filename):
 	plt.ylabel('Test Accuracy (%)')
 	plt.show()
 
-filename = 'logs/sr_crossval500_to30pct.log'
+filename = 'logs/sr_crossval500.log'
 # filename = 'logs/crossval.log'
 process_crossval_log(filename)
 # process_test_log()

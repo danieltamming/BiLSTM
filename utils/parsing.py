@@ -5,7 +5,7 @@ from easydict import EasyDict
 
 def get_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('-cfg', '--config', default='crossval_sr.json', type=str,
+    parser.add_argument('-cfg', '--config', default='test_sr.json', type=str,
                         help='Config file name?')
     parser.add_argument('-wkrs', '--num_workers', default=-1, type=int,
     					help='Number of workers for dataloaders?')
@@ -22,5 +22,5 @@ def get_config():
         config.num_workers = args.num_workers
     if args.batch_size != -1: 
         config.batch_size = args.batch_size
-    
+
     return config
