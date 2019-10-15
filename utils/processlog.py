@@ -61,7 +61,7 @@ def process_crossval_log(filename):
 		plt.xlabel('Epoch')
 		plt.show()
 
-def process_test_log(filename):
+def read_test_log(filename):
 	with open(filename) as f:
 		pcts, accs = [], []
 		line = f.readline()
@@ -73,14 +73,32 @@ def process_test_log(filename):
 			line = f.readline()
 	pcts = 100*np.array(pcts)
 	accs = 100*np.array(accs)
+	return pcts, accs
+
+def process_test_log(filename):
+	pcts, accs = read_test_log(filename)
 	plt.plot(pcts,accs, '-bo')
 	plt.axis((0,100,70,100))
-	plt.title('Learning Curve With Synonym Replacement')
+	plt.title('Learning Curve')
 	plt.xlabel('Percent of Dataset (%)')
 	plt.ylabel('Test Accuracy (%)')
 	plt.show()
 
+def compare_test_logs(def_filename, aug_filename):
+	def_pcts, def_accs = read_test_log(def_filename)
+	aug_pcts, aug_accs = read_test_log(aug_filename)
+	plt.plot(aug_pcts, aug_accs, '-ro', label='Synonym Replacement')
+	plt.plot(def_pcts,def_accs, '-bo', label='No Augmentation')
+	plt.axis((0,100,70,100))
+	plt.title('Learning Curve')
+	plt.xlabel('Percent of Dataset (%)')
+	plt.ylabel('Test Accuracy (%)')
+	plt.legend()
+	plt.show()
+
 filename = 'logs/sr_crossval500.log'
-filename = 'logs/sr_test500.log'
+sr_filename = 'logs/sr_test500.log'
+filename = 'logs/test500.log'
 # process_crossval_log(filename)
-process_test_log(filename)
+# process_test_log(filename)
+compare_test_logs(filename, sr_filename)
