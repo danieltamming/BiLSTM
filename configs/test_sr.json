@@ -10,6 +10,7 @@
 	"seed":314,
 
 	"mode":"test",
+	"aug_mode":null,
 
 	"embed_filename": "data/procon_sr/embeddings.txt",
 	"train_path": "data/procon_sr/train/",

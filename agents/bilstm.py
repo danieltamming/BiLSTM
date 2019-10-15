@@ -9,6 +9,7 @@ from tqdm import tqdm
 from graphs.models.bilstm import BiLSTM
 from graphs.losses.loss import CrossEntropyLoss
 from datasets.procon import ProConDataLoader
+from datasets.procon_sr import ProConSRDataLoader
 from utils.metrics import AverageMeter, get_accuracy, EarlyStopper
 
 class BiLSTMAgent:
@@ -20,10 +21,9 @@ class BiLSTMAgent:
 		self.loss = CrossEntropyLoss()
 		print('Using '+str(self.pct_usage)+' of the dataset.')
 		self.logger.info('Using '+str(self.pct_usage)+' of the dataset.')
-		self.loaders = ProConDataLoader(self.config, self.pct_usage)
-
+		if self.config.aug_mode == 'sr': self.loaders = ProConSRDataLoader(self.config, self.pct_usage)
+		else: self.loaders = ProConDataLoader(self.config, self.pct_usage)
 		self.device = torch.device('cuda:1' if torch.cuda.is_available() else 'cpu')
-
 
 	def initialize_model(self):
 		self.model = BiLSTM(self.config)

@@ -1,11 +1,10 @@
-import random
 import numpy as np
 import torch
 import torch.nn as nn
 from torch.utils.data import Dataset, DataLoader
 from torch.utils.data.sampler import SubsetRandomSampler
 
-from utils.data import get_split_indices, get_embeddings, get_sequences, get_sr_sequences, sr_augment
+from utils.data import get_split_indices, get_embeddings, get_sequences
 
 class ProConDataset(Dataset):
 	def __init__(self, config, data_path, embedding_file, pct_usage):
@@ -19,69 +18,29 @@ class ProConDataset(Dataset):
 		review_embd = self.embeddings.take(self.reviews[idx], axis=0)
 		return review_embd, self.labels[idx]
 
-class ProConSRDataset(Dataset):
-	def __init__(self, reviews, labels, indices, embeddings, input_length, augment):
-		# self.reviews, self.labels = get_sr_sequences(config, data_path, pct_usage)
-		self.reviews = [reviews[idx] for idx in indices]
-		self.labels = [labels[idx] for idx in indices]
-		self.augment = augment
-		self.embeddings = embeddings
-		self.input_length = input_length
-
-	def __len__(self):
-		return len(self.reviews)
-
-	def __getitem__(self, idx):
-		ratio = float(1)/2
-		p = 0.5
-		q = 0.5
-
-		orig, syns = self.reviews[idx]
-		if self.augment and syns and random.random()>ratio: rev = sr_augment(orig, syns, p, q, self.input_length)
-		else: rev = orig
-		review_embd = self.embeddings.take(rev, axis=0)
-		return review_embd, self.labels[idx]
-
 class ProConDataLoader:
 	def __init__(self, config, pct_usage):
 		self.config = config
 		self.pct_usage = pct_usage
-		self.reviews, self.labels = get_sr_sequences(self.config, self.config.train_path, pct_usage)
-		self.embeddings = get_embeddings(self.config.embed_filename)
-
-		# self.train_set = ProConDataset(self.config, self.config.train_path, self.config.embed_filename, self.pct_usage)
-		# if config.mode == 'test': self.test_set = ProConDataset(self.config, self.config.test_path, self.config.embed_filename, 1)
-		self.folds = get_split_indices(self.config.seed, self.config.num_classes, self.config.num_folds, self.labels)
+		self.train_set = ProConDataset(self.config, self.config.train_path, self.config.embed_filename, self.pct_usage)
+		if config.mode == 'test': self.test_set = ProConDataset(self.config, self.config.test_path, self.config.embed_filename, 1)
+		self.folds = get_split_indices(self.config.seed, self.config.num_classes, self.config.num_folds, self.train_set.labels)
 
 	def getFold(self, fold_num=0):
 		val_idxs = self.folds[fold_num]
-		val_dataset = ProConSRDataset(self.reviews, self.labels, val_idxs, self.embeddings, self.config.input_length, False)
-		val_loader = DataLoader(val_dataset, self.config.batch_size,
-						num_workers=self.config.num_workers, pin_memory=True)
-		train_idxs = [idx for i,fold in enumerate(self.folds) if i != fold_num for idx in fold]
-		train_dataset = ProConSRDataset(self.reviews, self.labels, train_idxs, self.embeddings, self.config.input_length, True)
-		train_loader = DataLoader(train_dataset, self.config.batch_size,
-						num_workers=self.config.num_workers, pin_memory=True)
+		val_sampler = SubsetRandomSampler(val_idxs)
+		val_loader = DataLoader(self.train_set, self.config.batch_size, 
+						num_workers=self.config.num_workers, sampler=val_sampler, pin_memory=True)
+		train_idxs = [idx for i,fold in enumerate(self.folds) if i!=fold_num for idx in fold]
+		train_sampler = SubsetRandomSampler(train_idxs)
+		train_loader = DataLoader(self.train_set, self.config.batch_size, 
+						num_workers=self.config.num_workers, sampler=train_sampler, pin_memory=True)
 		return train_loader, val_loader
-		# val_idxs = self.folds[fold_num]
-		# val_sampler = SubsetRandomSampler(val_idxs)
-		# val_loader = DataLoader(self.train_set, self.config.batch_size, 
-		# 				num_workers=self.config.num_workers, sampler=val_sampler, pin_memory=True)
-		# train_idxs = [idx for i,fold in enumerate(self.folds) if i!=fold_num for idx in fold]
-		# train_sampler = SubsetRandomSampler(train_idxs)
-		# train_loader = DataLoader(self.train_set, self.config.batch_size, 
-		# 				num_workers=self.config.num_workers, sampler=train_sampler, pin_memory=True)
-		# return train_loader, val_loader
 
 	def getTrainLoader(self):
-		train_dataset = ProConSRDataset(self.reviews, self.labels, 
-						list(range(len(self.labels))), self.embeddings, self.config.input_length, True)
-		return DataLoader(train_dataset, self.config.batch_size, 
+		return DataLoader(self.train_set, self.config.batch_size, 
 				num_workers=self.config.num_workers, pin_memory=True)
 
 	def getTestLoader(self):
-		reviews, labels = get_sr_sequences(self.config, self.config.test_path, 1)
-		test_dataset = ProConSRDataset(reviews, labels, list(range(len(labels))),
-						self.embeddings, self.config.input_length, False)
-		return DataLoader(test_dataset, self.config.batch_size, 
+		return DataLoader(self.test_set, self.config.batch_size, 
 				num_workers=self.config.num_workers, pin_memory=True)

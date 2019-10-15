@@ -5,7 +5,7 @@ from easydict import EasyDict
 
 def get_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('-cfg', '--config', default='test_sr.json', type=str,
+    parser.add_argument('-cfg', '--config', default='test.json', type=str,
                         help='Config file name?')
     parser.add_argument('-wkrs', '--num_workers', default=-1, type=int,
     					help='Number of workers for dataloaders?')

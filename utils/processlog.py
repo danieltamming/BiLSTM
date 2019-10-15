@@ -75,12 +75,12 @@ def process_test_log(filename):
 	accs = 100*np.array(accs)
 	plt.plot(pcts,accs, '-bo')
 	plt.axis((0,100,70,100))
-	plt.title('Learning Curve')
+	plt.title('Learning Curve With Synonym Replacement')
 	plt.xlabel('Percent of Dataset (%)')
 	plt.ylabel('Test Accuracy (%)')
 	plt.show()
 
 filename = 'logs/sr_crossval500.log'
-# filename = 'logs/crossval.log'
-process_crossval_log(filename)
-# process_test_log()
+filename = 'logs/sr_test500.log'
+# process_crossval_log(filename)
+process_test_log(filename)
