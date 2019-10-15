@@ -1,0 +1,28 @@
+INFO:BiLSTMAgent:Using 0.02 of the dataset.
+INFO:BiLSTMAgent:Validating epoch 499 | loss: 0.54599 - accuracy: 0.7642
+INFO:BiLSTMAgent:Using 0.04 of the dataset.
+INFO:BiLSTMAgent:Validating epoch 499 | loss: 0.48307 - accuracy: 0.82627
+INFO:BiLSTMAgent:Using 0.06 of the dataset.
+INFO:BiLSTMAgent:Validating epoch 499 | loss: 0.46236 - accuracy: 0.85031
+INFO:BiLSTMAgent:Using 0.08 of the dataset.
+INFO:BiLSTMAgent:Validating epoch 499 | loss: 0.45495 - accuracy: 0.85402
+INFO:BiLSTMAgent:Using 0.1 of the dataset.
+INFO:BiLSTMAgent:Validating epoch 499 | loss: 0.44963 - accuracy: 0.8608
+INFO:BiLSTMAgent:Using 0.2 of the dataset.
+INFO:BiLSTMAgent:Validating epoch 499 | loss: 0.42597 - accuracy: 0.88746
+INFO:BiLSTMAgent:Using 0.3 of the dataset.
+INFO:BiLSTMAgent:Validating epoch 499 | loss: 0.4221 - accuracy: 0.89248
+INFO:BiLSTMAgent:Using 0.4 of the dataset.
+INFO:BiLSTMAgent:Validating epoch 499 | loss: 0.4131 - accuracy: 0.90144
+INFO:BiLSTMAgent:Using 0.5 of the dataset.
+INFO:BiLSTMAgent:Validating epoch 499 | loss: 0.40506 - accuracy: 0.90931
+INFO:BiLSTMAgent:Using 0.6 of the dataset.
+INFO:BiLSTMAgent:Validating epoch 499 | loss: 0.40121 - accuracy: 0.91062
+INFO:BiLSTMAgent:Using 0.7 of the dataset.
+INFO:BiLSTMAgent:Validating epoch 499 | loss: 0.40302 - accuracy: 0.90931
+INFO:BiLSTMAgent:Using 0.8 of the dataset.
+INFO:BiLSTMAgent:Validating epoch 499 | loss: 0.39718 - accuracy: 0.91193
+INFO:BiLSTMAgent:Using 0.9 of the dataset.
+INFO:BiLSTMAgent:Validating epoch 499 | loss: 0.40394 - accuracy: 0.90691
+INFO:BiLSTMAgent:Using 1.0 of the dataset.
+INFO:BiLSTMAgent:Validating epoch 499 | loss: 0.40162 - accuracy: 0.90953
