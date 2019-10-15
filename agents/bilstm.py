@@ -55,7 +55,7 @@ class BiLSTMAgent:
 	def train(self):
 		if self.config.mode == 'crossval':
 			# stopper = EarlyStopper(self.config.patience, self.config.min_epochs)
-			for self.cur_epoch in range(self.config.num_epochs):
+			for self.cur_epoch in tqdm(range(self.config.num_epochs)):
 				self.train_one_epoch()
 				acc,_ = self.validate()
 				# if stopper.update_and_check(acc): 
@@ -73,7 +73,7 @@ class BiLSTMAgent:
 		loss = AverageMeter()
 		acc = AverageMeter()
 
-		for x, y in tqdm(self.train_loader):
+		for x, y in self.train_loader:
 			x = x.float()
 			# if torch.cuda.is_available(): 
 			# 	x = x.to(self.device)
@@ -103,7 +103,7 @@ class BiLSTMAgent:
 		
 		loss = AverageMeter()
 		acc = AverageMeter()
-		for x, y in tqdm(self.val_loader):
+		for x, y in self.val_loader:
 			x = x.float()
 			# if torch.cuda.is_available():
 			# 	x = x.to(self.device)
