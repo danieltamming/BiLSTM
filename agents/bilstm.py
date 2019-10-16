@@ -13,25 +13,27 @@ from datasets.procon_sr import ProConSRDataLoader
 from utils.metrics import AverageMeter, get_accuracy, EarlyStopper
 
 class BiLSTMAgent:
-	def __init__(self, config, pct_usage=1):
+	def __init__(self, config, pct_usage=1, frac=0.5, geo=0.5):
 		self.config = config
 		self.pct_usage = pct_usage
+		self.frac = frac
+		self.geo = geo
 		self.logger = logging.getLogger('BiLSTMAgent')
 		self.cur_epoch = 0
 		self.loss = CrossEntropyLoss()
-		print('Using '+str(self.pct_usage)+' of the dataset.')
-		self.logger.info('Using '+str(self.pct_usage)+' of the dataset.')
-		if self.config.aug_mode == 'sr': self.loaders = ProConSRDataLoader(self.config, self.pct_usage)
+		if self.config.aug_mode == 'sr': self.loaders = ProConSRDataLoader(self.config, self.pct_usage, self.frac, self.geo)
 		else: self.loaders = ProConDataLoader(self.config, self.pct_usage)
 		self.device = torch.device('cuda:1' if torch.cuda.is_available() else 'cpu')
+		print('Using '+str(int(100*self.pct_usage))+'% of the dataset.')
+		self.logger.info('Using '+str(self.pct_usage)+' of the dataset.')
+		print(str(int(100*self.frac))+'% of the training data will be original, the rest augmented.')
+		self.logger.info(str(int(100*self.frac))+'% of the training data will be original, the rest augmented.')
+		print('The geometric parameter for synonym selection is '+str(geo)+'.')
+		self.logger.info('The geometric parameter for synonym selection is '+str(geo)+'.')
 
 	def initialize_model(self):
 		self.model = BiLSTM(self.config)
-		# if torch.cuda.device_count() > 1: self.model = nn.DataParallel(self.model)
-		# if torch.cuda.is_available(): self.model = self.model.to(self.device)
-
 		self.model = self.model.to(self.device)
-
 		self.optimizer = Adam(self.model.parameters())
 		self.model.train()
 
@@ -75,9 +77,6 @@ class BiLSTMAgent:
 
 		for x, y in self.train_loader:
 			x = x.float()
-			# if torch.cuda.is_available(): 
-			# 	x = x.to(self.device)
-			# 	y = y.to(self.device)
 
 			x = x.to(self.device)
 			y = y.to(self.device)
@@ -105,9 +104,6 @@ class BiLSTMAgent:
 		acc = AverageMeter()
 		for x, y in self.val_loader:
 			x = x.float()
-			# if torch.cuda.is_available():
-			# 	x = x.to(self.device)
-			# 	y = y.to(self.device)
 
 			x = x.to(self.device)
 			y = y.to(self.device)

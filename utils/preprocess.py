@@ -188,8 +188,7 @@ def process(aug_mode):
 	word_to_num, num_to_word = get_tokenizer(word_counter, embed_vocab)
 	tknzd_reviews = tknz_dict(reviews, word_to_num, aug_mode)
 	write_tknzd_splits(tknzd_reviews, target_path, aug_mode)
-	print('SUCCESS')
 
 aug_mode = 'sr'
-aug_mode = None
+# aug_mode = None
 process(aug_mode)

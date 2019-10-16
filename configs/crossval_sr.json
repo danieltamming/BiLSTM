@@ -13,6 +13,7 @@
 	"seed":314,
 
 	"mode":"crossval",
+	"aug_mode":"sr",
 
 	"embed_filename": "data/procon_sr/embeddings.txt",
 	"train_path": "data/procon_sr/train/",
