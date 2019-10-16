@@ -6,8 +6,8 @@ config = get_config()
 initialize_logger()
 
 percentages = [0.02, 0.04, 0.06, 0.08] + [round(0.1*i,2) for i in range(1,11)]
-fracs = [round(0.1*i,2) for i in range(1,10)]
-geos = [round(0.1*i,2) for i in range(1,10)]
+fracs = [0.1, 0.3, 0.5, 0.7, 0.9]
+geos = [0.1, 0.3, 0.5, 0.7, 0.9]
 pct_usage = 0.3
 # percentages = [round(0.1*i,2) for i in range(8,11)]
 # for pct_usage in percentages:
