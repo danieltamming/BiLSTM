@@ -26,10 +26,11 @@ class BiLSTMAgent:
 		self.device = torch.device('cuda:1' if torch.cuda.is_available() else 'cpu')
 		print('Using '+str(int(100*self.pct_usage))+'% of the dataset.')
 		self.logger.info('Using '+str(self.pct_usage)+' of the dataset.')
-		print(str(int(100*self.frac))+'% of the training data will be original, the rest augmented.')
-		self.logger.info(str(int(100*self.frac))+'% of the training data will be original, the rest augmented.')
-		print('The geometric parameter for synonym selection is '+str(geo)+'.')
-		self.logger.info('The geometric parameter for synonym selection is '+str(geo)+'.')
+		if self.config.aug_mode == 'sr':
+			print(str(int(100*self.frac))+'% of the training data will be original, the rest augmented.')
+			self.logger.info(str(int(100*self.frac))+'% of the training data will be original, the rest augmented.')
+			print('The geometric parameter for synonym selection is '+str(geo)+'.')
+			self.logger.info('The geometric parameter for synonym selection is '+str(geo)+'.')
 
 	def initialize_model(self):
 		self.model = BiLSTM(self.config)

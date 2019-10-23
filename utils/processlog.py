@@ -1,6 +1,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
+from mpl_toolkits.mplot3d import Axes3D
+
 num_folds = 10
 
 def process_file(f):
@@ -22,7 +24,6 @@ def process_pct(f):
 		fold_accs.append(accs)
 	return pct, fold_accs
 
-
 def process_fold(f):
 	accs = []
 	f.readline()
@@ -32,6 +33,14 @@ def process_fold(f):
 			accs.append(float(line.split()[-1]))
 		line = f.readline().replace('INFO:BiLSTMAgent:','').rstrip('\n')
 	return accs
+
+def avg_folds(fold_accs):
+	min_epochs = min([len(fold) for fold in fold_accs])
+	for i, fold in enumerate(fold_accs):
+		fold_accs[i] = fold[:min_epochs]
+	accs = np.array(fold_accs)
+	avg_accs = np.mean(accs, axis=0)
+	return avg_accs
 
 def get_avg_accs(results_by_pct):
 	avg_accs_by_pct = {}
@@ -96,9 +105,72 @@ def compare_test_logs(def_filename, aug_filename):
 	plt.legend()
 	plt.show()
 
+def get_pct(line):
+	return line.split()[1]
+
+def get_frac(line):
+	return float(line.split(':')[-1].split('%', 1)[0])/100
+
+def get_geo(line):
+	return float(line.split()[-1].rstrip('.'))
+
+def process_grid(f):
+	pct = get_pct(f.readline())
+	frac = get_frac(f.readline())
+	geo = get_geo(f.readline())
+	fold_accs = []
+	line = f.readline().replace('INFO:BiLSTMAgent:','').rstrip('\n')
+	for _ in range(num_folds):
+		accs = process_fold(f)
+		fold_accs.append(accs)
+	return (frac, geo), fold_accs
+
+def process_crossval_gridsearch_log(filename):
+	num_fracs = 5
+	num_geos = 5
+	f = open(filename)
+	results_grid = {}
+	for _ in range(num_fracs*num_geos):
+		(frac, geo), arr = process_grid(f)
+		avgs = avg_folds(arr)
+		results_grid[(frac, geo)] = avgs
+	f.close()
+
+	# for (frac, geo), avg_accs in results_grid.items():
+	# 	print('Using '+str(frac)+' of the original dataset, geo of '+str(geo)+':')
+	# 	print(np.argmax(avg_accs))
+	# 	print(np.max(avg_accs))
+	# 	plt.plot(avg_accs)
+	# 	plt.title('Learning Curve With '+str(frac)+' of the original dataset, geo of '+str(geo))
+	# 	plt.ylabel('Cross Validation Accuracy (%)')
+	# 	plt.xlabel('Epoch')
+	# 	plt.show()
+	fracs = [key[0] for key in results_grid.keys()]
+	geos = [key[1] for key in results_grid.keys()]
+	# accs = [np.max(arr) for arr in results_grid.values()]
+	accs = [np.argmax(arr) for arr in results_grid.values()]
+
+	fig = plt.figure()
+	# ax = fig.add_subplot(111, projection='3d')
+	# for (frac, geo), avg_accs in results_grid.items():
+	# 	ax.scatter(geo,frac,np.max(avg_accs), cmap='gray')
+	# ax.set_xlabel('Frac')
+	# ax.set_ylabel('Geo')
+	# ax.set_zlabel('Acurracy')
+	# plt.show()
+
+	plt.scatter(fracs, geos, c=accs)
+	plt.colorbar()
+	plt.xlabel('Frac')
+	plt.ylabel('Geo')
+	plt.show()
+
 filename = 'logs/sr_crossval500.log'
 sr_filename = 'logs/sr_test500.log'
 filename = 'logs/test500.log'
 # process_crossval_log(filename)
 # process_test_log(filename)
-compare_test_logs(filename, sr_filename)
+# compare_test_logs(filename, sr_filename)
+
+filename = 'logs/sr_gridsearch_crossval.log'
+process_crossval_gridsearch_log(filename)

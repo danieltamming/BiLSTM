@@ -13,10 +13,14 @@ pct_usage = 0.3
 # for pct_usage in percentages:
 # 	agent = BiLSTMAgent(config, pct_usage)
 # 	agent.run()
-for frac in fracs:
-	for geo in geos:
-		agent = BiLSTMAgent(config, pct_usage, frac, geo)
-		agent.run()
+
+agent = BiLSTMAgent(config, pct_usage)
+agent.run()
+
+# for frac in fracs:
+# 	for geo in geos:
+# 		agent = BiLSTMAgent(config, pct_usage, frac, geo)
+# 		agent.run()
 
 # agent = BiLSTMAgent(config, 1)
 # agent.run()
