@@ -6,7 +6,8 @@ from mpl_toolkits.mplot3d import Axes3D
 num_folds = 10
 
 def process_file(f):
-	num_pctgs = 14
+	# num_pctgs = 14
+	num_pctgs = 1
 	# num_pctgs = 7
 	results_by_pct = {}
 	for _ in range(num_pctgs):
@@ -57,9 +58,7 @@ def process_crossval_log(filename):
 	f = open(filename)
 	results_by_pct = process_file(f)
 	f.close()
-
 	avg_accs_by_pct = get_avg_accs(results_by_pct)
-
 	for pct, avg_accs in avg_accs_by_pct.items():
 		print(pct)
 		print(np.argmax(avg_accs))
@@ -147,8 +146,9 @@ def process_crossval_gridsearch_log(filename):
 	# 	plt.show()
 	fracs = [key[0] for key in results_grid.keys()]
 	geos = [key[1] for key in results_grid.keys()]
-	# accs = [np.max(arr) for arr in results_grid.values()]
-	accs = [np.argmax(arr) for arr in results_grid.values()]
+	# accs = [arr[-1] for arr in results_grid.values()]
+	accs = [np.max(arr) for arr in results_grid.values()]
+	# accs = [np.argmax(arr) for arr in results_grid.values()]
 
 	fig = plt.figure()
 	# ax = fig.add_subplot(111, projection='3d')
@@ -167,7 +167,7 @@ def process_crossval_gridsearch_log(filename):
 
 filename = 'logs/sr_crossval500.log'
 sr_filename = 'logs/sr_test500.log'
-filename = 'logs/test500.log'
+filename = 'logs/crossval500.log'
 # process_crossval_log(filename)
 # process_test_log(filename)
 # compare_test_logs(filename, sr_filename)
