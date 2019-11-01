@@ -41,7 +41,7 @@ class EarlyStopper:
 			self.best = acc
 			self.since_improved = 0
 			if printing:
-				tqdm.write(('Epoch {} | accuracy '
+				print(('Epoch {} | accuracy '
 					  '{}%'.format(self.epoch_count, round(100*acc,3))))
 		else:
 			self.since_improved += 1

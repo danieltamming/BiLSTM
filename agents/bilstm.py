@@ -61,7 +61,7 @@ class BiLSTMAgent:
 
 	def train(self):
 		if self.config.mode == 'crosstest':
-			for self.cur_epoch in tqdm(range(self.config.num_epochs)):
+			for self.cur_epoch in range(self.config.num_epochs):
 				self.train_one_epoch()
 			s = 'Stopped after ' + str(self.config.num_epochs) + ' epochs'
 			print_and_log(self.logger, s)
@@ -69,9 +69,17 @@ class BiLSTMAgent:
 		elif self.config.mode == 'val':
 			stopper = EarlyStopper(self.config.patience, 
 								   self.config.min_epochs)
+
+			start_time = time.time()
+
 			for self.cur_epoch in tqdm(range(self.config.max_epochs)):
 				self.train_one_epoch()
 				acc,_ = self.validate()
+
+				if start_time is not None:
+					print('{} s/it'.format(round(time.time()-start_time,3)))
+					start_time = None
+
 				if stopper.update_and_check(acc, printing=True): 
 					s = ('Stopped early with patience '
 						'{}'.format(self.config.patience))
