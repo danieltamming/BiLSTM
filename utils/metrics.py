@@ -40,7 +40,8 @@ class EarlyStopper:
 			self.best = acc
 			self.since_improved = 0
 			if printing:
-				print('Epoch {} | accuracy {}'.format(round(100*acc,3)))
+				print(('Epoch {} | accuracy '
+					  '{}%'.format(self.epoch_count, round(100*acc,3))))
 		else:
 			self.since_improved += 1
 		return (self.since_improved > self.patience 
