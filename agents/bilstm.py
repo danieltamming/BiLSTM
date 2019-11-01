@@ -69,7 +69,7 @@ class BiLSTMAgent:
 		elif self.config.mode == 'val':
 			stopper = EarlyStopper(self.config.patience, 
 								   self.config.min_epochs)
-			for self.cur_epoch in range(self.config.max_epochs):
+			for self.cur_epoch in tqdm(range(self.config.max_epochs)):
 				self.train_one_epoch()
 				acc,_ = self.validate()
 				if stopper.update_and_check(acc, printing=True): 

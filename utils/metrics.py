@@ -36,6 +36,7 @@ class EarlyStopper:
 		self.epoch_count = -1
 
 	def update_and_check(self, acc, printing=False):
+		self.epoch_count += 1
 		if self.best < acc:
 			self.best = acc
 			self.since_improved = 0
