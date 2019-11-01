@@ -1,3 +1,4 @@
+import tqdm
 import torch
 
 class AverageMeter:
@@ -32,15 +33,14 @@ class EarlyStopper:
 		self.best = 0
 		self.since_improved = 0
 		self.min_epochs = min_epochs
-		self.epoch_count = 0
+		self.epoch_count = -1
 
 	def update_and_check(self, acc, printing=False):
-		self.epoch_count += 1
 		if self.best < acc:
 			self.best = acc
 			self.since_improved = 0
 			if printing:
-				print(('Epoch {} | accuracy '
+				tqdm.write(('Epoch {} | accuracy '
 					  '{}%'.format(self.epoch_count, round(100*acc,3))))
 		else:
 			self.since_improved += 1
