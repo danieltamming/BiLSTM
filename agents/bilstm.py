@@ -100,11 +100,11 @@ class BiLSTMAgent:
 			acc.update(accuracy, y.shape[0])
 
 		# if self.config.mode == 'crossval':
-		s = ('Training epoch {} | loss: {} - accuracy: ' 
-		'{}'.format(self.cur_epoch, 
-					round(loss.val, 5), 
-					round(acc.val, 5)))
-		print_and_log(self.logger, s)
+		# s = ('Training epoch {} | loss: {} - accuracy: ' 
+		# '{}'.format(self.cur_epoch, 
+		# 			round(loss.val, 5), 
+		# 			round(acc.val, 5)))
+		# print_and_log(self.logger, s)
 
 	def validate(self):
 		self.model.eval()
@@ -124,9 +124,9 @@ class BiLSTMAgent:
 			accuracy = get_accuracy(output, y)
 			acc.update(accuracy, y.shape[0])
 
-		s = ('Validating epoch {} | loss: {} - accuracy: ' 
-			'{}'.format(self.cur_epoch, 
-						round(loss.val, 5), 
-						round(acc.val, 5)))
-		print_and_log(self.logger, s)
+		# s = ('Validating epoch {} | loss: {} - accuracy: ' 
+		# 	'{}'.format(self.cur_epoch, 
+		# 				round(loss.val, 5), 
+		# 				round(acc.val, 5)))
+		# print_and_log(self.logger, s)
 		return acc.val, loss.val

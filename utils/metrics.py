@@ -39,6 +39,9 @@ class EarlyStopper:
 		if self.best < acc:
 			self.best = acc
 			self.since_improved = 0
+			print(('Best validation acc, {}, so far, at epoch ' 
+				  '{}'.format(acc, self.epoch_count)))
 		else:
 			self.since_improved += 1
-		return self.since_improved > self.patience and self.epoch_count > self.min_epochs
+		return self.since_improved > self.patience 
+			   and self.epoch_count > self.min_epochs
