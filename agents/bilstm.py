@@ -72,7 +72,7 @@ class BiLSTMAgent:
 
 			start_time = time.time()
 
-			for self.cur_epoch in tqdm(range(self.config.max_epochs)):
+			for self.cur_epoch in range(self.config.max_epochs):
 				self.train_one_epoch()
 				acc,_ = self.validate()
 
