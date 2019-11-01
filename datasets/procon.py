@@ -25,7 +25,7 @@ class ProConDataset(Dataset):
 		p = q = self.geo
 		label, orig_seq, aug = self.data[idx]
 		if self.geo and aug and random.random()>self.frac: 
-			seq = sr_augment(org_seq, aug, p, q, self.config.input_length)
+			seq = sr_augment(orig_seq, aug, p, q, self.input_length)
 		else: 
 			seq = orig_seq
 		seq_embd = self.embeddings.take(seq, axis=0)
