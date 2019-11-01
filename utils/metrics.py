@@ -34,14 +34,15 @@ class EarlyStopper:
 		self.min_epochs = min_epochs
 		self.epoch_count = 0
 
-	def update_and_check(self, acc):
+	def update_and_check(self, acc, printing):
 		self.epoch_count += 1
 		if self.best < acc:
 			self.best = acc
 			self.since_improved = 0
-			print(('Best validation acc, {}, so far, at epoch ' 
-				  '{}'.format(acc, self.epoch_count)))
+			if printing:
+				print('Achieved best acc so far: '
+					  '{}%'.format(round(100*acc,3)))
 		else:
 			self.since_improved += 1
 		return (self.since_improved > self.patience 
-			   and self.epoch_count > self.min_epochs)
+			    and self.epoch_count > self.min_epochs)

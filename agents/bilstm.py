@@ -72,7 +72,7 @@ class BiLSTMAgent:
 			for self.cur_epoch in tqdm(range(self.config.max_epochs)):
 				self.train_one_epoch()
 				acc,_ = self.validate()
-				if stopper.update_and_check(acc): 
+				if stopper.update_and_check(acc, printing=True): 
 					s = ('Stopped early with patience '
 						'{}'.format(self.config.patience))
 					print_and_log(self.logger, s)
