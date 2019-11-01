@@ -144,6 +144,6 @@ def process(aug_mode):
 		pickle.dump(tknzd_data, f, protocol=pickle.HIGHEST_PROTOCOL)
 
 if __name__ == "__main__":
-	# aug_mode = 'sr'
-	aug_mode = None
+	aug_mode = 'sr'
+	# aug_mode = None
 	process(aug_mode)
