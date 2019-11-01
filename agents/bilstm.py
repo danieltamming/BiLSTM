@@ -28,7 +28,7 @@ class BiLSTMAgent:
 					   else 'cpu'))
 		print('Using '+str(int(100*self.pct_usage))+'% of the dataset.')
 		self.logger.info('Using '+str(self.pct_usage)+' of the dataset.')
-		
+
 		if self.config.aug_mode == 'sr':
 			s = (str(int(100*self.frac))+'% of the training data will be ' 
 				 'original, the rest augmented.')
@@ -83,7 +83,7 @@ class BiLSTMAgent:
 		loss = AverageMeter()
 		acc = AverageMeter()
 
-		for x, y in tqdm(self.train_loader):
+		for x, y in self.train_loader:
 			x = x.float()
 
 			x = x.to(self.device)
@@ -99,12 +99,12 @@ class BiLSTMAgent:
 			accuracy = get_accuracy(output, y)
 			acc.update(accuracy, y.shape[0])
 
-		if self.config.mode == 'crossval':
-			s = ('Training epoch {} | loss: {} - accuracy: ' 
-			'{}'.format(self.cur_epoch, 
-						round(loss.val, 5), 
-						round(acc.val, 5)))
-			print_and_log(self.logger, s)
+		# if self.config.mode == 'crossval':
+		s = ('Training epoch {} | loss: {} - accuracy: ' 
+		'{}'.format(self.cur_epoch, 
+					round(loss.val, 5), 
+					round(acc.val, 5)))
+		print_and_log(self.logger, s)
 
 	def validate(self):
 		self.model.eval()
