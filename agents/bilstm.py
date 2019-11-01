@@ -69,7 +69,7 @@ class BiLSTMAgent:
 		elif self.config.mode == 'val':
 			stopper = EarlyStopper(self.config.patience, 
 								   self.config.min_epochs)
-			for self.cur_epoch in tqdm(range(self.config.max_epochs)):
+			for self.cur_epoch in range(self.config.max_epochs):
 				self.train_one_epoch()
 				acc,_ = self.validate()
 				if stopper.update_and_check(acc, printing=True): 
@@ -105,6 +105,8 @@ class BiLSTMAgent:
 		# 			round(loss.val, 5), 
 		# 			round(acc.val, 5)))
 		# print_and_log(self.logger, s)
+		# self.logger.info(s)
+
 
 	def validate(self):
 		self.model.eval()
@@ -124,9 +126,11 @@ class BiLSTMAgent:
 			accuracy = get_accuracy(output, y)
 			acc.update(accuracy, y.shape[0])
 
-		# s = ('Validating epoch {} | loss: {} - accuracy: ' 
-		# 	'{}'.format(self.cur_epoch, 
-		# 				round(loss.val, 5), 
-		# 				round(acc.val, 5)))
+		s = ('Validating epoch {} | loss: {} - accuracy: ' 
+			'{}'.format(self.cur_epoch, 
+						round(loss.val, 5), 
+						round(acc.val, 5)))
 		# print_and_log(self.logger, s)
+		self.logger.info(s)
+
 		return acc.val, loss.val
