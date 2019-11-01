@@ -56,7 +56,8 @@ class ProConDataManager:
 			self.config.input_length, self.frac, self.geo)
 		train_loader =  DataLoader(
 			train_dataset, self.config.batch_size, 
-			num_workers=self.config.num_workers, pin_memory=True)
+			num_workers=self.config.num_workers, 
+			pin_memory=True, shuffle=True)
 		val_dataset = ProConDataset(
 			self.val_data, self.embeddings,
 			self.config.input_length)
@@ -81,5 +82,6 @@ class ProConDataManager:
 			self.config.input_length, self.frac, self.geo)
 		train_loader = DataLoader(
 			train_dataset, self.config.batch_size,
-			num_workers=self.config.num_workers, pin_memory=True)
+			num_workers=self.config.num_workers, 
+			pin_memory=True, shuffle=True)
 		return train_loader, test_loader
