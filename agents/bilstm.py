@@ -24,7 +24,7 @@ class BiLSTMAgent:
 		self.mngr = ProConDataManager(
 			self.config, self.pct_usage, frac, geo)
 
-		self.device = (torch.device('cuda:1' if torch.cuda.is_available() 
+		self.device = (torch.device('cuda:0' if torch.cuda.is_available() 
 					   else 'cpu'))
 		print('Using '+str(int(100*self.pct_usage))+'% of the dataset.')
 		self.logger.info('Using '+str(self.pct_usage)+' of the dataset.')
@@ -46,7 +46,7 @@ class BiLSTMAgent:
 		if self.config.mode == 'crosstest':
 			for fold in range(self.config.num_folds):
 				self.initialize_model()
-				s = 'Fold number '+str(fold)
+				s = 'Fold number {}'.format(fold)
 				print_and_log(self.logger, s)
 				(self.train_loader, 
 				self.val_loader) = self.mngr.crosstest_ldrs(fold)

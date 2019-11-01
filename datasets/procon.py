@@ -42,8 +42,9 @@ class ProConDataManager:
 								  self.config.input_length)
 		self.embeddings = get_embeddings(self.config.data_path)
 		if self.config.mode == 'crosstest':
-			self.folds = get_split_indices(self.data, self.config.seed, 
-								  self.config.num_classes, self.num_folds)
+			self.folds = get_split_indices(
+				self.data, self.config.seed, 
+				self.config.num_classes, self.config.num_folds)
 		elif self.config.mode == 'val':
 			self.val_data, all_train_data = partition_within_classes(
 				self.data, self.config.val_pct, self.config.num_classes)
