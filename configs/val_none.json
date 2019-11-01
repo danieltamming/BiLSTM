@@ -1,0 +1,21 @@
+{
+	"input_length": 25,
+	"embed_dim": 300,
+	"num_epochs": 500,
+	"num_classes": 2,
+
+	"batch_size":1024,
+	"num_workers":8,
+
+	"seed":314,
+
+	"aug_mode":null,
+
+	"data_path": "data/procon/",
+	
+	"mode":"val",
+	"val_pct":0.1,
+	"max_epochs":2000,
+	"min_epochs": 100,
+	"patience": 100
+}

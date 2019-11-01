@@ -8,9 +8,9 @@ from tqdm import tqdm
 
 from graphs.models.bilstm import BiLSTM
 from graphs.losses.loss import CrossEntropyLoss
-from datasets.procon import ProConDataLoader
-from datasets.procon_sr import ProConSRDataLoader
+from datasets.procon import ProConDataManager
 from utils.metrics import AverageMeter, get_accuracy, EarlyStopper
+from utils.logger import print_and_log
 
 class BiLSTMAgent:
 	def __init__(self, config, pct_usage=1, frac=0.5, geo=0.5):
@@ -21,16 +21,20 @@ class BiLSTMAgent:
 		self.logger = logging.getLogger('BiLSTMAgent')
 		self.cur_epoch = 0
 		self.loss = CrossEntropyLoss()
-		if self.config.aug_mode == 'sr': self.loaders = ProConSRDataLoader(self.config, self.pct_usage, self.frac, self.geo)
-		else: self.loaders = ProConDataLoader(self.config, self.pct_usage)
-		self.device = torch.device('cuda:1' if torch.cuda.is_available() else 'cpu')
+		self.mngr = ProConDataManager(
+			self.config, self.pct_usage, frac, geo)
+
+		self.device = (torch.device('cuda:1' if torch.cuda.is_available() 
+					   else 'cpu'))
 		print('Using '+str(int(100*self.pct_usage))+'% of the dataset.')
 		self.logger.info('Using '+str(self.pct_usage)+' of the dataset.')
+		
 		if self.config.aug_mode == 'sr':
-			print(str(int(100*self.frac))+'% of the training data will be original, the rest augmented.')
-			self.logger.info(str(int(100*self.frac))+'% of the training data will be original, the rest augmented.')
-			print('The geometric parameter for synonym selection is '+str(geo)+'.')
-			self.logger.info('The geometric parameter for synonym selection is '+str(geo)+'.')
+			s = (str(int(100*self.frac))+'% of the training data will be ' 
+				 'original, the rest augmented.')
+			print_and_log(self.logger, s)
+			s = 'The geometric parameter is '+str(geo)+'.'
+			print_and_log(self.logger, s)
 
 	def initialize_model(self):
 		self.model = BiLSTM(self.config)
@@ -39,44 +43,47 @@ class BiLSTMAgent:
 		self.model.train()
 
 	def run(self):
-		if self.config.mode == 'crossval':
-			for fold_count in range(self.config.num_folds):
+		if self.config.mode == 'crosstest':
+			for fold in range(self.config.num_folds):
 				self.initialize_model()
-				print('Fold number '+str(fold_count))
-				self.logger.info('Fold number '+str(fold_count))
-				self.train_loader, self.val_loader = self.loaders.getFold(fold_count)
+				s = 'Fold number '+str(fold)
+				print_and_log(self.logger, s)
+				(self.train_loader, 
+				self.val_loader) = self.mngr.crosstest_ldrs(fold)
 				self.train()
-				# acc,_ = self.validate()
+				self.validate()
 
-		elif self.config.mode == 'test':
-			self.train_loader = self.loaders.getTrainLoader()
-			self.val_loader = self.loaders.getTestLoader()
+		elif self.config.mode == 'val':
+			self.train_loader, self.val_loader = self.mngr.val_ldrs()
 			self.initialize_model()
 			self.train()
-			self.validate()
+			# self.validate()
 
 	def train(self):
-		if self.config.mode == 'crossval':
-			# stopper = EarlyStopper(self.config.patience, self.config.min_epochs)
+		if self.config.mode == 'crosstest':
 			for self.cur_epoch in tqdm(range(self.config.num_epochs)):
+				self.train_one_epoch()
+			s = 'Stopped after ' + str(self.config.num_epochs) + ' epochs'
+			print_and_log(self.logger, s)
+
+		elif self.config.mode == 'val':
+			stopper = EarlyStopper(self.config.patience, 
+								   self.config.min_epochs)
+			for self.cur_epoch in tqdm(range(self.config.max_epochs)):
 				self.train_one_epoch()
 				acc,_ = self.validate()
-				# if stopper.update_and_check(acc): 
-				# 	print('Stopped early with patience '+str(self.config.patience))
-				# 	self.logger.info('Stopped early with patience '+str(self.config.patience))
-				# 	break
-			self.logger.info('Stopped after '+str(self.config.num_epochs)+' epochs')
-
-		elif self.config.mode == 'test':
-			for self.cur_epoch in tqdm(range(self.config.num_epochs)):
-				self.train_one_epoch()
+				if stopper.update_and_check(acc): 
+					s = ('Stopped early with patience '
+						'{}'.format(self.config.patience))
+					print_and_log(self.logger, s)
+					break
 
 	def train_one_epoch(self):
 		self.model.train()
 		loss = AverageMeter()
 		acc = AverageMeter()
 
-		for x, y in self.train_loader:
+		for x, y in tqdm(self.train_loader):
 			x = x.float()
 
 			x = x.to(self.device)
@@ -93,10 +100,11 @@ class BiLSTMAgent:
 			acc.update(accuracy, y.shape[0])
 
 		if self.config.mode == 'crossval':
-			# print('Training epoch '+str(self.cur_epoch)+' | loss: '
-			#	+str(round(loss.val,5))+' - accuracy: '+str(round(acc.val,5)))
-			self.logger.info('Training epoch '+str(self.cur_epoch)+' | loss: '
-				+str(round(loss.val,5))+' - accuracy: '+str(round(acc.val,5)))
+			s = ('Training epoch {} | loss: {} - accuracy: ' 
+			'{}'.format(self.cur_epoch, 
+						round(loss.val, 5), 
+						round(acc.val, 5)))
+			print_and_log(self.logger, s)
 
 	def validate(self):
 		self.model.eval()
@@ -116,8 +124,9 @@ class BiLSTMAgent:
 			accuracy = get_accuracy(output, y)
 			acc.update(accuracy, y.shape[0])
 
-		# print('Validating epoch '+str(self.cur_epoch)+' | loss: '
-		#	+str(round(loss.val,5))+' - accuracy: '+str(round(acc.val,5)))
-		self.logger.info('Validating epoch '+str(self.cur_epoch)+' | loss: '
-			+str(round(loss.val,5))+' - accuracy: '+str(round(acc.val,5)))
+		s = ('Validating epoch {} | loss: {} - accuracy: ' 
+			'{}'.format(self.cur_epoch, 
+						round(loss.val, 5), 
+						round(acc.val, 5)))
+		print_and_log(self.logger, s)
 		return acc.val, loss.val

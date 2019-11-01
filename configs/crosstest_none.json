@@ -1,0 +1,18 @@
+{
+	"input_length": 25,
+	"embed_dim": 300,
+	"num_epochs": 500,
+	"num_classes": 2,
+
+	"batch_size":1024,
+	"num_workers":8,
+
+	"seed":314,
+
+	"aug_mode":null,
+
+	"data_path": "data/procon/",
+
+	"mode":"crosstest",
+	"num_folds":10
+}

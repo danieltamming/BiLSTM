@@ -170,7 +170,8 @@ sr_filename = 'logs/sr_test500.log'
 filename = 'logs/crossval500.log'
 # process_crossval_log(filename)
 # process_test_log(filename)
-# compare_test_logs(filename, sr_filename)
+filename = 'logs/test500.log'
+compare_test_logs(filename, sr_filename)
 
-filename = 'logs/sr_gridsearch_crossval.log'
-process_crossval_gridsearch_log(filename)
+# filename = 'logs/sr_gridsearch_crossval.log'
+# process_crossval_gridsearch_log(filename)
