@@ -34,8 +34,10 @@ if __name__ == "__main__":
 	config = get_config()
 	initialize_logger()
 
-	pct_usage = 1
-	grid_search(pct_usage)
+	percentages = ([0.02, 0.04, 0.06, 0.08] 
+				   + [round(0.1*i,2) for i in range(1,10)])
+	for pct_usage in percentages:
+		grid_search(pct_usage)
 
 	# agent = BiLSTMAgent(config, pct_usage)
 	# agent.run()
