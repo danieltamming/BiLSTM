@@ -1,0 +1,59 @@
+nohup: ignoring input
+Using 100% of the dataset.
+14% of the training data will be original, the rest augmented.
+The geometric parameter is 0.5.
+3.587 s/it
+Epoch 0 | accuracy 76.584%
+Epoch 1 | accuracy 82.329%
+Epoch 2 | accuracy 84.054%
+Epoch 3 | accuracy 84.6%
+Epoch 4 | accuracy 85.518%
+Epoch 6 | accuracy 87.615%
+Epoch 8 | accuracy 88.663%
+Epoch 9 | accuracy 88.729%
+Epoch 11 | accuracy 90.214%
+Epoch 14 | accuracy 90.848%
+Epoch 18 | accuracy 91.0%
+Epoch 19 | accuracy 91.11%
+Epoch 21 | accuracy 91.568%
+Epoch 26 | accuracy 91.612%
+Epoch 27 | accuracy 91.699%
+Epoch 29 | accuracy 91.983%
+Epoch 38 | accuracy 92.18%
+Epoch 45 | accuracy 92.42%
+Epoch 47 | accuracy 92.464%
+Epoch 50 | accuracy 92.486%
+Epoch 55 | accuracy 92.551%
+Epoch 97 | accuracy 92.595%
+Epoch 112 | accuracy 92.704%
+Epoch 136 | accuracy 92.879%
+Stopped early with patience 100
+Using 100% of the dataset.
+14% of the training data will be original, the rest augmented.
+The geometric parameter is 0.6.
+3.215 s/it
+Epoch 0 | accuracy 77.195%
+Epoch 1 | accuracy 82.394%
+Epoch 2 | accuracy 83.792%
+Epoch 3 | accuracy 85.19%
+Epoch 4 | accuracy 86.064%
+Epoch 6 | accuracy 86.894%
+Epoch 7 | accuracy 87.505%
+Epoch 8 | accuracy 88.292%
+Epoch 9 | accuracy 88.947%
+Epoch 12 | accuracy 90.083%
+Epoch 17 | accuracy 90.367%
+Epoch 22 | accuracy 91.328%
+Epoch 25 | accuracy 91.437%
+Epoch 27 | accuracy 91.59%
+Epoch 31 | accuracy 91.765%
+Epoch 34 | accuracy 91.787%
+Epoch 36 | accuracy 91.852%
+Epoch 38 | accuracy 91.94%
+Epoch 39 | accuracy 92.071%
+Epoch 43 | accuracy 92.289%
+Epoch 62 | accuracy 92.311%
+Epoch 63 | accuracy 92.508%
+Epoch 67 | accuracy 92.529%
+Epoch 71 | accuracy 92.595%
+Epoch 76 | accuracy 92.617%
