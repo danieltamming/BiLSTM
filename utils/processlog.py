@@ -135,8 +135,12 @@ def process_gridsearch_log(filename, num_fracs, num_geos):
 if __name__ == "__main__":
 	# filename = 'logs/val_no_aug.log'
 	# plot_val_vary_pct(filename, 1, True, None, None)
-	filename = 'logs/val_sr_100p.log'
-	plot_val_gridsearch(filename, 1, True, True)
-	# filename = 'logs/2019:11:01-23:05:00.log'
-	# for desired_pct in [0.02, 0.04, 0.06, 0.08, 0.1, 0.2, 0.3]:
-	# 	plot_val_gridsearch(filename, desired_pct, True, True)
+
+	# filename = 'logs/val_sr_100p.log'
+	# plot_val_gridsearch(filename, 1, True, True)
+
+	filename = 'logs/val_sr_allpcts.log'
+	percentages = ([0.02, 0.04, 0.06, 0.08] 
+				  + [round(0.1*i,2) for i in range(1,11)])
+	for desired_pct in percentages:
+		plot_val_gridsearch(filename, desired_pct, True, True)
