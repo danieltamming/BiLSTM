@@ -132,6 +132,9 @@ def add_synonym_dicts(data, min_reputation):
 def process(aug_mode):
 	data_path, embed_filename, target_path = get_paths(aug_mode)
 	data = get_data(data_path, 'IntegratedPros.txt', 'IntegratedCons.txt')
+	print(len(data))
+	print(data[0])
+	exit()
 	if aug_mode == 'sr': 
 		data = add_synonym_dicts(data, 2)
 	word_counter = get_word_counter(data)
