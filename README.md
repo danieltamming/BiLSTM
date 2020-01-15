@@ -4,7 +4,7 @@ A stacked bidirectional LSTM used as a baseline for training curve analysis in a
 The model is trained on various fractions of a training set and tested on a test set of fixed size. 
 This allows the learning curves like the image below to be created. 
 
-![picture](images/LearningCurvePctTest150.png)
+![picture](figures/v0/LearningCurvePctTest150.png)
 
 ### Current Use Case
 Performs sentiment classification on the pro-con dataset introduced by Ganapathibhotla.
